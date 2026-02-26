@@ -10,6 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20b14a0b385fe284596d923428eb1e8e, type: 3}
-  m_Name: CharacterDB
+  m_Name: PioneerData
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDB
-  characterPrefabs: []
+  characterPrefabs:
+  - {fileID: 1881556813145634615, guid: c9a6fa10c0477984ba4371da2904332d, type: 3}

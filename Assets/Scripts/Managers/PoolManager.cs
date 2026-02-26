@@ -2,26 +2,17 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using UnityEngine.Pool;
+using Object = UnityEngine.Object;
 
 public class PoolManager : MonoBehaviour
 {
-    [SerializeField] private CharacterDB _characterDB;
-    
-    private Dictionary<Type, GameObject> _prefabs = new Dictionary<Type, GameObject>();
-    private Dictionary<Type, IObjectPool<GameObject>> _pools = new Dictionary<Type, IObjectPool<GameObject>>();
+    private Dictionary<int, IObjectPool<GameObject>> _pools = new Dictionary<int, IObjectPool<GameObject>>();
 
     public void Init()
     {
-        foreach (var prefab in _characterDB.characterPrefabs)
-        {
-            var component = prefab.GetComponent<ACharacter>();
-            if (component != null)
-            {
-                _prefabs[component.GetType()] = prefab;
-            }
-        }
+        _pools.Clear();
     }
-
+    
     private IObjectPool<GameObject> CreatePool(GameObject argPrefab)
     {
         return new ObjectPool<GameObject>(
@@ -50,43 +41,45 @@ public class PoolManager : MonoBehaviour
     {
         if (argObject == null)
             return;
-        Destroy(argObject);
+        Object.Destroy(argObject);
     }
     
-    public T Spawn<T>(Vector3 argPosition) where T : Component
+    public GameObject Instantiate<T>(PrefabID argPrefabId) where T : Component
     {
-        Type type = typeof(T);
-        if (!_pools.ContainsKey(type))
+        int id = (int)argPrefabId;
+        if (!Managers.Data.TryGetPrefab(id, out var prefab))
+        { 
+            Debug.LogError($"No prefab found for id:{id}");
+            return null;
+        }
+        if (!_pools.ContainsKey(id))
         {
-            if (!_prefabs.TryGetValue(type, out GameObject prefab))
-            {
-                Debug.LogError($"{type.Name} does not exist");
-                return null;
-            }
-            _pools[type] = CreatePool(prefab);
+            _pools[id] = CreatePool(prefab);
         }
 
-        GameObject go = _pools[type].Get();
+        GameObject go = _pools[id].Get();
         if (go == null)
+        {
+            Debug.LogError($"instantiate failed. id:{id}");
             return null;
+        }
         
-        go.transform.position = argPosition;
-        return go.GetComponent<T>();
+        return go;
     }
 
-    public void Release<T>(T argObj) where T : Component
+    public void Destroy<T>(T argObj, PrefabID argPrefabId) where T : Component
     {
         if (argObj == null || argObj.gameObject == null) return;
 
-        Type type = typeof(T);
-        if (_pools.TryGetValue(typeof(T), out var pool))
+        int id = (int)argPrefabId;
+        if (_pools.TryGetValue(id, out var pool))
         {
             pool.Release(argObj.gameObject);
         }
         else
         {
-            Debug.LogError($"{type.Name} does not exist");
-            Destroy(argObj.gameObject);
+            Debug.LogError($"{id} does not exist");
+            Object.Destroy(argObj.gameObject);
         }
     }
 }
