@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20b14a0b385fe284596d923428eb1e8e, type: 3}
-  m_Name: AlienData
-  m_EditorClassIdentifier: Assembly-CSharp::CharacterDB
+  m_Script: {fileID: 11500000, guid: d113223f9a6a5f84b9732ad90d3253d6, type: 3}
+  m_Name: SpawnerData
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnerData
   prefabInfoList:
-  - id: 1001
-    prefab: {fileID: 2181363908181298611, guid: 827c58c71e99f9e44ae577ffe471126d, type: 3}
+  - id: 5001
+    prefab: {fileID: 3243057903193463720, guid: d3c00fb6392af6843983cad3cf17ecc5, type: 3}

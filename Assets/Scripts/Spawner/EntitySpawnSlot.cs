@@ -3,35 +3,36 @@ using UnityEngine;
 
 public class EntitySpawnSlot
 {
-    private const int INVALID_TARGET_ID = 0;
+    private const PrefabID INVALID_TARGET_ID = PrefabID.None;
     private const float DEFALUT_PROGRESS = 0f;
 
-    private uint _spawnerUid;
-    private int _slotId;
+    private int _spawnerIndex;
+    private int _slotIndex;
     private PrefabID _targetId;
     private float _progress;
 
     // slotId, targetId
-    private Action<int, PrefabID> _onTargetChange;
+    private Action<int> _onTargetChange;
     
-    public uint SpawnerUid => _spawnerUid;
+    public int SpawnerIndex => _spawnerIndex;
 
-    public void Init(uint argSpawnerUid, Action<int, PrefabID> argOnTargetChange)
+    public void Init(int argSpawnerIndex, Action<int> argOnTargetChange)
     {
         ResetSlot();
 
-        _spawnerUid = argSpawnerUid;
+        _spawnerIndex = argSpawnerIndex;
         _onTargetChange = argOnTargetChange;
     }
 
-    public void TargetChange(PrefabID argTargetId)
+    public void ChangeTarget(PrefabID argTargetId)
     {
         if (argTargetId == _targetId)
         {
             return;
         }
+        ResetSlot();
         _targetId = argTargetId;
-        _onTargetChange?.Invoke(_slotId, _targetId);
+        _onTargetChange?.Invoke(_slotIndex);
     }
     
     public void SetTargetId(PrefabID argId)

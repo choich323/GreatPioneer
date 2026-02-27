@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataManager
+public class DataManager : MonoBehaviour
 {
-    [SerializeField] private List<AData> _dataList;
+    [SerializeField] private List<APrefabData> _dataList;
     
-    private Dictionary<int, AData> _dataMap = new Dictionary<int, AData>();
     private Dictionary<int, GameObject> _prefabMap = new Dictionary<int, GameObject>();
     
     public void Init()
@@ -15,8 +14,6 @@ public class DataManager
 
     void Mapping()
     {
-        _dataMap.Clear();
-        
         foreach (var data in _dataList)
         {
             if (data == null) continue;
@@ -31,11 +28,6 @@ public class DataManager
                 }
             }
         }
-    }
-
-    public bool TryGetData(int argId, out AData outData)
-    {
-        return _dataMap.TryGetValue(argId, out outData);
     }
 
     public bool TryGetPrefab(int argId, out GameObject outObject)

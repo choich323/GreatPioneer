@@ -32,12 +32,13 @@ public class Managers : MonoBehaviour
 
     private void InitManagers()
     {
+        _dataManager = GetComponent<DataManager>();
+        _dataManager.Init();
+        
         _poolManager = GetComponent<PoolManager>();
         _poolManager.Init();
         
-        _dataManager = new DataManager();
-        _dataManager.Init();
-        
         _gameManager = GetComponent<GameManager>();
+        _gameManager.Init();
     }
 }

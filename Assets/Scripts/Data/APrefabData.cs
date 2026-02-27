@@ -9,7 +9,7 @@ public struct PrefabInfo
     public GameObject prefab;
 }
 
-public abstract class AData : ScriptableObject
+public abstract class APrefabData : ScriptableObject
 {
     public List<PrefabInfo> prefabInfoList;
 }

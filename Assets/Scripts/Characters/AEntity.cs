@@ -11,8 +11,9 @@ public enum Team
 public struct EntityInfo
 {
     public int id;
-    public uint uid;
+    public ulong uid;
     public Team team;
+    public float productionTime;
 }
     
 [Serializable]
@@ -50,15 +51,10 @@ public abstract class AEntity : MonoBehaviour
     {
         _entityInfo.team = argTeam;
     }
-    
-    private void Awake()
-    {
-        Init();
-    }
 
-    public virtual void Init()
+    public virtual void Init(ulong argUid)
     {
-        
+        _entityInfo.uid = argUid;
     }
 
     private void Update()

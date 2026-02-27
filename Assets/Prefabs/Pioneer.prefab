@@ -136,9 +136,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2156927b5baf134469ddf8c426e2c14e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Warrior
-  _moveSettings:
-    moveSpeed: 2
-    direction: {x: 0, y: 0}
-  _characterSettings:
-    id: 0
+  _entityMoveInfo:
+    moveSpeed: 3
+  _entityInfo:
+    id: 101
     uid: 0
+    team: 0
+    productionTime: 3

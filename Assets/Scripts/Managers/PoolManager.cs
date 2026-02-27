@@ -63,7 +63,7 @@ public class PoolManager : MonoBehaviour
             Debug.LogError($"instantiate failed. id:{id}");
             return null;
         }
-        
+
         return go;
     }
 
