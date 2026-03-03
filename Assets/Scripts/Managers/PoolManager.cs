@@ -67,19 +67,19 @@ public class PoolManager : MonoBehaviour
         return go;
     }
 
-    public void Destroy<T>(T argObj, PrefabID argPrefabId) where T : Component
+    public void Destroy<T>(T argType, PrefabID argPrefabId) where T : Component
     {
-        if (argObj == null || argObj.gameObject == null) return;
+        if (argType == null || argType.gameObject == null) return;
 
         int id = (int)argPrefabId;
         if (_pools.TryGetValue(id, out var pool))
         {
-            pool.Release(argObj.gameObject);
+            pool.Release(argType.gameObject);
         }
         else
         {
             Debug.LogError($"{id} does not exist");
-            Object.Destroy(argObj.gameObject);
+            Object.Destroy(argType.gameObject);
         }
     }
 }

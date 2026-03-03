@@ -13,80 +13,81 @@ public class GameField : MonoBehaviour
 
     private int _playerSpawnerIndex = DEFAULT_INDEX;
     private int _enemySpawnerIndex = DEFAULT_INDEX;
-    private List<EntitySpawner> _playerEntitySpawnerList = new List<EntitySpawner>();
-    private List<EntitySpawner> _enemyEntitySpawnerList = new List<EntitySpawner>();
+    private Dictionary<Team, List<EntitySpawner>> _spawnerDict = new Dictionary<Team, List<EntitySpawner>>();
+    private Dictionary<Team, Dictionary<Type, HashSet<AEntity>>> _entityDict = new Dictionary<Team, Dictionary<Type, HashSet<AEntity>>>();
     
     public void Init()
     {
+        InitDict();
+        
         CreateSpawners();
     }
 
+    void InitDict()
+    {
+        _spawnerDict[Team.Player] = new List<EntitySpawner>();
+        _spawnerDict[Team.Enemy] = new List<EntitySpawner>();
+        
+        _entityDict[Team.Player] = new Dictionary<Type, HashSet<AEntity>>();
+        _entityDict[Team.Enemy] = new Dictionary<Type, HashSet<AEntity>>();
+    }
+    
     void CreateSpawners()
     {
         for(int i = 0; i < _playerEntitySpawnerPosList.Count; i++)
         {
-            CreateSpawner(true);
+            CreateSpawner(Team.Player, ref _playerSpawnerIndex);
+            
         }
 
         for (int i = 0; i < _enemyEntitySpawnerPosList.Count; i++)
         {
-            CreateSpawner(false);
+            CreateSpawner(Team.Enemy, ref _enemySpawnerIndex);
         }
     }
 
-    EntitySpawner CreateSpawner(bool argIsPlayer)
-    {
-        if (argIsPlayer)
-        {
-            return CreatePlayerSpawner();
-        }
-        else
-        {
-            return CreateEnemySpawner();
-        }
-    }
-
-    EntitySpawner CreatePlayerSpawner()
+    EntitySpawner CreateSpawner(Team argTeam, ref int argSpawnerIndex)
     {
         var spawnerObj = Managers.Pool.Instantiate<EntitySpawner>(PrefabID.EntitySpawner);
         if (spawnerObj == null)
             return null;
         
-        int spawnerPosIndex = _playerSpawnerIndex % DEFAULT_SPAWNER_COUNT;
-        var pos = _playerEntitySpawnerPosList[spawnerPosIndex].position;
+        int spawnerPosIndex = argSpawnerIndex % DEFAULT_SPAWNER_COUNT;
+        var posList = argTeam == Team.Player ? _playerEntitySpawnerPosList : _enemyEntitySpawnerPosList;
+        var pos = posList[spawnerPosIndex].position;
         spawnerObj.transform.position = pos;
         var spawner = spawnerObj.GetComponent<EntitySpawner>();
-        spawner.Init(_playerSpawnerIndex);
-        _playerSpawnerIndex++;
-        _playerEntitySpawnerList.Add(spawner);
-
-        return spawner;
-    }
-
-    EntitySpawner CreateEnemySpawner()
-    {
-        var spawnerObj = Managers.Pool.Instantiate<EntitySpawner>(PrefabID.EntitySpawner);
-        if (spawnerObj == null)
-            return null;
+        argSpawnerIndex++;
+        spawner.Init(argTeam, AddEntity, RemoveEntity);
         
-        int spawnerPosIndex = _enemySpawnerIndex % DEFAULT_SPAWNER_COUNT;
-        var pos = _enemyEntitySpawnerPosList[spawnerPosIndex].position;
-        spawnerObj.transform.position = pos;
-        var spawner = spawnerObj.GetComponent<EntitySpawner>();
-        spawner.Init(_enemySpawnerIndex);
-        _enemySpawnerIndex++;
-        _enemyEntitySpawnerList.Add(spawner);
-
         return spawner;
     }
     
     public void AddEntity(AEntity argEntity)
     {
+        var ei = argEntity.EntityInfo;
+        Team team = ei.team;
+        Type type = argEntity.GetType();
         
+        var teamDict = _entityDict[team];
+
+        if (!teamDict.ContainsKey(type))
+        {
+            teamDict[type] = new HashSet<AEntity>();
+        }
+
+        teamDict[type].Add(argEntity);
     }
 
     public void RemoveEntity(AEntity argEntity)
     {
-        
+        var ei = argEntity.EntityInfo;
+        Team team = ei.team;
+        Type type = argEntity.GetType();
+
+        if (_entityDict[team].TryGetValue(type, out var entitySet))
+        {
+            entitySet.Remove(argEntity);
+        }
     }
 }

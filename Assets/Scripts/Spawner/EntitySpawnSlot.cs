@@ -6,7 +6,6 @@ public class EntitySpawnSlot
     private const PrefabID INVALID_TARGET_ID = PrefabID.None;
     private const float DEFALUT_PROGRESS = 0f;
 
-    private int _spawnerIndex;
     private int _slotIndex;
     private PrefabID _targetId;
     private float _progress;
@@ -14,13 +13,11 @@ public class EntitySpawnSlot
     // slotId, targetId
     private Action<int> _onTargetChange;
     
-    public int SpawnerIndex => _spawnerIndex;
-
-    public void Init(int argSpawnerIndex, Action<int> argOnTargetChange)
+    public void Init(int argSlotIndex, Action<int> argOnTargetChange)
     {
         ResetSlot();
 
-        _spawnerIndex = argSpawnerIndex;
+        _slotIndex = argSlotIndex;
         _onTargetChange = argOnTargetChange;
     }
 

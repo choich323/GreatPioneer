@@ -3,14 +3,15 @@ using UnityEngine;
 
 public enum Team
 {
-    Blue,
-    Red,
+    None,
+    Player,
+    Enemy,
 }
 
 [Serializable]
 public struct EntityInfo
 {
-    public int id;
+    public PrefabID id;
     public ulong uid;
     public Team team;
     public float productionTime;
@@ -52,9 +53,19 @@ public abstract class AEntity : MonoBehaviour
         _entityInfo.team = argTeam;
     }
 
-    public virtual void Init(ulong argUid)
+    public virtual void Init(PrefabID argId, ulong argUid, Team argTeam)
     {
+        _entityInfo.id = argId;
         _entityInfo.uid = argUid;
+        _entityInfo.team = argTeam;
+        if (argTeam == Team.Player)
+        {
+            _direction = Vector2.right;
+        }
+        else
+        {
+            _direction = Vector2.left;
+        }
     }
 
     private void Update()

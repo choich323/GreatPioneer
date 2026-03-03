@@ -1,25 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EntitySpawner : MonoBehaviour
 {
-    private const int DEFAULT_INDEX = 0;
-    private const int DEFAULT_SLOT_COUNT = 2;
+    private const int DEFAULT_SLOT_INDEX = 0;
     
     // slot과 coroutine의 인덱스를 동일하게 맞춰야 한다.
     private List<EntitySpawnSlot> _slotList = new List<EntitySpawnSlot>();
     private List<Coroutine> _coroutineList = new List<Coroutine>();
-    private int _index = DEFAULT_INDEX;
+    private int _slotIndex = DEFAULT_SLOT_INDEX;
+    private Team _team;
     
-    public int Index => _index;
+    private Action<AEntity> _onAddEntity;
+    private Action<AEntity> _onRemoveEntity;
     
-    public void Init(int argIndex)
+    public void Init(Team argTeam, Action<AEntity> argOnAddEntity, Action<AEntity> argOnRemoveEntity)
     {
         ResetSpawner();
         
-        _index = argIndex;
-        for (int i = 0; i < DEFAULT_SLOT_COUNT; i++)
+        _team = argTeam;
+        _onAddEntity = argOnAddEntity;
+        _onRemoveEntity = argOnRemoveEntity;
+        
+        for (int i = 0; i < Managers.Game.SlotCountMax; i++)
         {
             AddSlot();
         }
@@ -28,15 +33,10 @@ public class EntitySpawner : MonoBehaviour
     public void AddSlot()
     {
         var slot = new EntitySpawnSlot();
-        slot.Init(_index, OnSlotTargetChanged);
-        _index++;
+        slot.Init(_slotIndex, OnSlotTargetChanged);
+        _slotIndex++;
         _slotList.Add(slot);
         _coroutineList.Add(null);
-    }
-    
-    public void RemoveSlot(int argSlotIndex)
-    {
-        _slotList.RemoveAt(argSlotIndex);
     }
 
     public void ResetSpawner()
@@ -50,7 +50,11 @@ public class EntitySpawner : MonoBehaviour
         }
         _slotList.Clear();
         
-        _index = DEFAULT_INDEX;
+        _slotIndex = DEFAULT_SLOT_INDEX;
+        _team = Team.None;
+        
+        _onAddEntity = null;
+        _onRemoveEntity = null;
     }
 
     void OnSlotTargetChanged(int argSlotIndex)
@@ -109,19 +113,15 @@ public class EntitySpawner : MonoBehaviour
         {
             entityObj.transform.position = transform.position;
             var entity = entityObj.GetComponent<AEntity>();
-            entity.Init(Managers.Game.GetUid());
+            entity.Init(argPrefabId, Managers.Game.GetNewUid(), _team);
             
-            OnSpawn(argPrefabId);
+            OnSpawn(entity);
         }
     }
 
-    void OnSpawn(PrefabID argPrefabId)
+    void OnSpawn(AEntity argEntity)
     {
-        // 필드에서 캐릭터 수 카운팅
-        // 액션으로 콜백 필요
-        // 아이디로 저장하기?
-        // go 도 저장해서 관리해야 한다
-        
+        _onAddEntity?.Invoke(argEntity);
     }
 
     [ContextMenu("Spawn")]
