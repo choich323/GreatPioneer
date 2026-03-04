@@ -5,7 +5,6 @@ using UnityEngine;
 [Serializable]
 public struct PrefabInfo
 {
-    public string prefabId;
     public GameObject prefab;
 }
 
