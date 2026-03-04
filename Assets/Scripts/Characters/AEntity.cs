@@ -9,40 +9,42 @@ public enum Team
 }
 
 [Serializable]
-public struct EntityInfo
+public struct EntityStatus
 {
-    public PrefabID id;
-    public ulong uid;
+    [Header("Team")]
     public Team team;
-    public float productionTime;
-}
     
-[Serializable]
-public struct EntityMoveInfo
-{
+    [Header("Life")]
+    public int curHp;
+    public int curShield;
+    public float armor;
+
+    [Header("Attack")]
+    public float attack;
+    public float attackSpeed;
+    public float attackRange;
+    [Range(0, 1)] 
+    public float criticalChance;
+    
+    [Header("Move")]
     public float moveSpeed;
+    
+    [Header("SpawnCool")]
+    public float productionTime;
 }
 
 public abstract class AEntity : MonoBehaviour
 {
-    [SerializeField] private EntityMoveInfo _entityMoveInfo;
-    [SerializeField] private EntityInfo _entityInfo;
+    [SerializeField] private EntityStatus _entityStatus;
 
+    private PrefabID _id;
+    private ulong _uid;
     private Vector2 _direction;
     
-    public EntityMoveInfo EntityMoveInfo => _entityMoveInfo;
-    public EntityInfo EntityInfo => _entityInfo;
+    public EntityStatus EntityStatus => _entityStatus;
+    public PrefabID Id => _id;
+    public ulong Uid => _uid;
     
-    public float GetMoveSpeed()
-    {
-        return _entityMoveInfo.moveSpeed;
-    }
-
-    public void SetMoveSpeed(float argMoveSpeed)
-    {
-        _entityMoveInfo.moveSpeed = argMoveSpeed;
-    }
-
     public void SetMoveDirection(Vector2 argMoveDirection)
     {
         _direction = argMoveDirection;
@@ -50,14 +52,14 @@ public abstract class AEntity : MonoBehaviour
 
     public void SetTeam(Team argTeam)
     {
-        _entityInfo.team = argTeam;
+        _entityStatus.team = argTeam;
     }
 
     public virtual void Init(PrefabID argId, ulong argUid, Team argTeam)
     {
-        _entityInfo.id = argId;
-        _entityInfo.uid = argUid;
-        _entityInfo.team = argTeam;
+        _id = argId;
+        _uid = argUid;
+        _entityStatus.team = argTeam;
         if (argTeam == Team.Player)
         {
             _direction = Vector2.right;
@@ -75,6 +77,6 @@ public abstract class AEntity : MonoBehaviour
 
     public virtual void Move()
     {
-        transform.Translate(_direction * (_entityMoveInfo.moveSpeed * Time.deltaTime));
+        transform.Translate(_direction * (_entityStatus.moveSpeed * Time.deltaTime));
     }
 }

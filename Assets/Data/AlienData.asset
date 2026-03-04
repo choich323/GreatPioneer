@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: AlienData
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDB
   prefabInfoList:
-  - id: 1001
-    prefab: {fileID: 2181363908181298611, guid: 827c58c71e99f9e44ae577ffe471126d, type: 3}
+  - prefab: {fileID: 2181363908181298611, guid: 827c58c71e99f9e44ae577ffe471126d, type: 3}

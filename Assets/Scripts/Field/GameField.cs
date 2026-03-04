@@ -65,8 +65,8 @@ public class GameField : MonoBehaviour
     
     public void AddEntity(AEntity argEntity)
     {
-        var ei = argEntity.EntityInfo;
-        Team team = ei.team;
+        var es = argEntity.EntityStatus;
+        Team team = es.team;
         Type type = argEntity.GetType();
         
         var teamDict = _entityDict[team];
@@ -81,8 +81,8 @@ public class GameField : MonoBehaviour
 
     public void RemoveEntity(AEntity argEntity)
     {
-        var ei = argEntity.EntityInfo;
-        Team team = ei.team;
+        var es = argEntity.EntityStatus;
+        Team team = es.team;
         Type type = argEntity.GetType();
 
         if (_entityDict[team].TryGetValue(type, out var entitySet))

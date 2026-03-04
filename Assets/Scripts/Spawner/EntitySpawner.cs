@@ -94,7 +94,7 @@ public class EntitySpawner : MonoBehaviour
         {
             var entity = prefab.GetComponent<AEntity>();
             float elapsedTime = 0f;
-            float productionTime = entity.EntityInfo.productionTime;
+            float productionTime = entity.EntityStatus.productionTime;
             while (elapsedTime < productionTime) {
                 elapsedTime += Time.deltaTime;
                 slot.SetProgress(Mathf.Clamp01(elapsedTime / productionTime));
@@ -103,6 +103,7 @@ public class EntitySpawner : MonoBehaviour
             
             slot.SetProgress(0);
             Spawn(targetId);
+            yield return null;
         }
     }
     
