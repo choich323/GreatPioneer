@@ -6,14 +6,14 @@ public class DataManager : MonoBehaviour
 {
     [SerializeField] private List<APrefabData> _dataList;
     
-    private Dictionary<int, GameObject> _prefabMap = new Dictionary<int, GameObject>();
+    private Dictionary<int, APrefabInfo> _prefabDataDict = new Dictionary<int, APrefabInfo>();
     
     public void Init()
     {
-        Mapping();
+        InitialMapping();
     }
 
-    void Mapping()
+    void InitialMapping()
     {
         foreach (var data in _dataList)
         {
@@ -23,9 +23,9 @@ public class DataManager : MonoBehaviour
                 var key = (int)ConvertStringToPrefabID(info.prefab.name);
                 if (key == (int)PrefabID.None) continue;
                 
-                if (!_prefabMap.ContainsKey(key))
+                if (!_prefabDataDict.ContainsKey(key))
                 {
-                    _prefabMap[key] = info.prefab;
+                    _prefabDataDict[key] = info;
                 }
             }
         }
@@ -40,8 +40,8 @@ public class DataManager : MonoBehaviour
         return PrefabID.None;
     }
     
-    public bool TryGetPrefab(int argId, out GameObject outObject)
+    public bool TryGetPrefabInfo(int argId, out APrefabInfo outInfo)
     {
-        return _prefabMap.TryGetValue(argId, out outObject);
+        return _prefabDataDict.TryGetValue(argId, out outInfo);
     }
 }

@@ -28,9 +28,6 @@ public struct EntityStatus
     
     [Header("Move")]
     public float moveSpeed;
-    
-    [Header("SpawnCool")]
-    public float productionTime;
 }
 
 public abstract class AEntity : MonoBehaviour
@@ -45,7 +42,7 @@ public abstract class AEntity : MonoBehaviour
     public PrefabID Id => _id;
     public ulong Uid => _uid;
 
-    public virtual void Init(PrefabID argId, ulong argUid, Team argTeam)
+    public virtual void Init(PrefabID argId, ulong argUid, Team argTeam, EntityInfo argEntityInfo)
     {
         _id = argId;
         _uid = argUid;
@@ -58,6 +55,20 @@ public abstract class AEntity : MonoBehaviour
         {
             _direction = Vector2.left;
         }
+        
+        SetEntityInfo(argEntityInfo);
+    }
+
+    void SetEntityInfo(EntityInfo argEntityInfo)
+    {
+        _entityStatus.curHp = argEntityInfo.hp;
+        _entityStatus.curShield = argEntityInfo.shield;
+        _entityStatus.armor = argEntityInfo.armor;
+        _entityStatus.attack = argEntityInfo.attack;
+        _entityStatus.attackSpeed = _entityStatus.attackSpeed;
+        _entityStatus.attackRange = argEntityInfo.attackRange;
+        _entityStatus.criticalChance = argEntityInfo.criticalChance;
+        _entityStatus.moveSpeed = argEntityInfo.moveSpeed;
     }
 
     private void Update()

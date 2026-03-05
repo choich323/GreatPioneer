@@ -86,15 +86,15 @@ public class EntitySpawner : MonoBehaviour
     {
         var slot = _slotList[argSlotIndex];
         var targetId = slot.GetTargetId();
-        Managers.Data.TryGetPrefab((int)targetId, out var prefab);
-        if(prefab == null) 
+        Managers.Data.TryGetPrefabInfo((int)targetId, out var info);
+        if(info == null) 
             yield break;
 
         while (true)
         {
-            var entity = prefab.GetComponent<AEntity>();
+            var entityInfo = info as EntityInfo;
+            float productionTime = entityInfo.productionTime;
             float elapsedTime = 0f;
-            float productionTime = entity.EntityStatus.productionTime;
             while (elapsedTime < productionTime) {
                 elapsedTime += Time.deltaTime;
                 slot.SetProgress(Mathf.Clamp01(elapsedTime / productionTime));
@@ -102,19 +102,19 @@ public class EntitySpawner : MonoBehaviour
             }
             
             slot.SetProgress(0);
-            Spawn(targetId);
+            Spawn(targetId, entityInfo);
             yield return null;
         }
     }
     
-    void Spawn(PrefabID argPrefabId)
+    void Spawn(PrefabID argPrefabId, EntityInfo argEntityInfo)
     {
         var entityObj = Managers.Pool.Instantiate<AEntity>(argPrefabId);
         if (entityObj != null)
         {
             entityObj.transform.position = transform.position;
             var entity = entityObj.GetComponent<AEntity>();
-            entity.Init(argPrefabId, Managers.Game.GetNewUid(), _team);
+            entity.Init(argPrefabId, Managers.Game.GetNewUid(), _team, argEntityInfo);
             
             OnSpawn(entity);
         }
