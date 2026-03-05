@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class PrefabInfo
+public class APrefabInfo
 {
     public GameObject prefab;
 }
 
 public abstract class APrefabData : ScriptableObject
 {
-    public List<PrefabInfo> prefabInfoList;
+    public abstract IEnumerable<APrefabInfo> GetInfoList();
 }

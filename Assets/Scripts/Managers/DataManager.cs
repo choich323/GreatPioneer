@@ -18,7 +18,7 @@ public class DataManager : MonoBehaviour
         foreach (var data in _dataList)
         {
             if (data == null) continue;
-            foreach (var info in data.prefabInfoList)
+            foreach (var info in data.GetInfoList())
             {
                 var key = (int)ConvertStringToPrefabID(info.prefab.name);
                 if (key == (int)PrefabID.None) continue;

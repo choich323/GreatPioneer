@@ -44,16 +44,6 @@ public abstract class AEntity : MonoBehaviour
     public EntityStatus EntityStatus => _entityStatus;
     public PrefabID Id => _id;
     public ulong Uid => _uid;
-    
-    public void SetMoveDirection(Vector2 argMoveDirection)
-    {
-        _direction = argMoveDirection;
-    }
-
-    public void SetTeam(Team argTeam)
-    {
-        _entityStatus.team = argTeam;
-    }
 
     public virtual void Init(PrefabID argId, ulong argUid, Team argTeam)
     {

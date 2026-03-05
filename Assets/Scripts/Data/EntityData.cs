@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class EntityInfo : PrefabInfo
+public class EntityInfo : APrefabInfo
 {
     public int hp;
     public int shield;
@@ -22,5 +23,10 @@ public class EntityInfo : PrefabInfo
 [CreateAssetMenu(fileName = "EntityData", menuName = "Custom/EntityData")]
 public class EntityData : APrefabData
 {
-    
+    public List<EntityInfo> entityInfoList = new List<EntityInfo>();
+
+    public override IEnumerable<APrefabInfo> GetInfoList()
+    {
+        return entityInfoList;
+    }
 }
