@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class GameField : MonoBehaviour
 {
@@ -10,11 +9,14 @@ public class GameField : MonoBehaviour
     
     [SerializeField] private List<Transform> _playerEntitySpawnerPosList;
     [SerializeField] private List<Transform> _enemyEntitySpawnerPosList;
+    [SerializeField] private Transform _prefabParent;
 
     private int _playerSpawnerIndex = DEFAULT_INDEX;
     private int _enemySpawnerIndex = DEFAULT_INDEX;
     private Dictionary<Team, List<EntitySpawner>> _spawnerDict = new Dictionary<Team, List<EntitySpawner>>();
     private Dictionary<Team, Dictionary<Type, HashSet<AEntity>>> _entityDict = new Dictionary<Team, Dictionary<Type, HashSet<AEntity>>>();
+    
+    public Transform PrefabParent => _prefabParent;
     
     public void Init()
     {
@@ -56,9 +58,10 @@ public class GameField : MonoBehaviour
         var posList = argTeam == Team.Player ? _playerEntitySpawnerPosList : _enemyEntitySpawnerPosList;
         var pos = posList[spawnerPosIndex].position;
         spawnerObj.transform.position = pos;
+        spawnerObj.transform.SetParent(_prefabParent);
         var spawner = spawnerObj.GetComponent<EntitySpawner>();
         argSpawnerIndex++;
-        spawner.Init(argTeam, AddEntity, RemoveEntity);
+        spawner.Init(argTeam);
         
         return spawner;
     }

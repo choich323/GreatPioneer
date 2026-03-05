@@ -13,16 +13,11 @@ public class EntitySpawner : MonoBehaviour
     private int _slotIndex = DEFAULT_SLOT_INDEX;
     private Team _team;
     
-    private Action<AEntity> _onAddEntity;
-    private Action<AEntity> _onRemoveEntity;
-    
-    public void Init(Team argTeam, Action<AEntity> argOnAddEntity, Action<AEntity> argOnRemoveEntity)
+    public void Init(Team argTeam)
     {
         ResetSpawner();
         
         _team = argTeam;
-        _onAddEntity = argOnAddEntity;
-        _onRemoveEntity = argOnRemoveEntity;
         
         for (int i = 0; i < Managers.Game.SlotCountMax; i++)
         {
@@ -52,9 +47,6 @@ public class EntitySpawner : MonoBehaviour
         
         _slotIndex = DEFAULT_SLOT_INDEX;
         _team = Team.None;
-        
-        _onAddEntity = null;
-        _onRemoveEntity = null;
     }
 
     void OnSlotTargetChanged(int argSlotIndex)
@@ -113,6 +105,7 @@ public class EntitySpawner : MonoBehaviour
         if (entityObj != null)
         {
             entityObj.transform.position = transform.position;
+            entityObj.transform.SetParent(Managers.Game.GameField.PrefabParent);
             var entity = entityObj.GetComponent<AEntity>();
             entity.Init(argPrefabId, Managers.Game.GetNewUid(), _team, argEntityInfo);
             
@@ -122,7 +115,8 @@ public class EntitySpawner : MonoBehaviour
 
     void OnSpawn(AEntity argEntity)
     {
-        _onAddEntity?.Invoke(argEntity);
+        Managers.Game.GameField.AddEntity(argEntity);
+        Debug.Log("Spawn Success!");
     }
 
     [ContextMenu("Spawn")]

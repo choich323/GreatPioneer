@@ -1,8 +1,8 @@
 
 public interface IDamageable
 {
-    public Team EntityTeam { get; }
-    public float CurrentHP { get; }
-    public void TakeDamage(float amount, AEntity attacker);
+    public Team Team { get; }
+    public float CurHp { get; }
     public bool IsDead { get; }
+    public void TakeDamage(float argDamage, AEntity argAttacker);
 }

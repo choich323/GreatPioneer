@@ -373,6 +373,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1191136607164361015}
+  - component: {fileID: 3046261984898217237}
   m_Layer: 0
   m_Name: GameField
   m_TagString: Untagged
@@ -389,7 +390,7 @@ Transform:
   m_GameObject: {fileID: 2371699528564399278}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.61606, y: -2.42448, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -402,8 +403,30 @@ Transform:
   - {fileID: 1508745112991816488}
   - {fileID: 8058858231423257339}
   - {fileID: 3179303281186384143}
+  - {fileID: 1366315769661430165}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3046261984898217237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2371699528564399278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d530edc90ba381241b7386065c2e0aa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameField
+  _playerEntitySpawnerPosList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _enemyEntitySpawnerPosList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _prefabParent: {fileID: 1366315769661430165}
 --- !u!1 &2385045451953968249
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,6 +700,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &4077475994111793833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1366315769661430165}
+  m_Layer: 0
+  m_Name: PrefabParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1366315769661430165
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4077475994111793833}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1191136607164361015}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6489466777669584073
 GameObject:
   m_ObjectHideFlags: 0
