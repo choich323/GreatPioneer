@@ -8,6 +8,19 @@ public enum Team
     Enemy,
 }
 
+public enum EffectType
+{
+    None,
+    Attack,
+}
+
+public enum EntityActionType
+{
+    None,
+    Move,
+    Combat,
+}
+
 [Serializable]
 public struct EntityStatus
 {
@@ -28,33 +41,50 @@ public struct EntityStatus
     
     [Header("Move")]
     public float moveSpeed;
+    
+    public EntityActionType curAction;
+    
+    public bool canAction;
 }
 
 public abstract class AEntity : MonoBehaviour
 {
     private const ulong INVALID_UID = 0;
     private const float DEFAULT_CRITICAL_DAMAGE_RATIO = 2f;
+    private const float EPSILON = 0.01f;
+    private const float RETARGET_INTERVAL = 5f;
+    private const float MIN_ATTACK_SPEED = 0.001f;
+    private const float MIN_ARMOR = -99f;
     private const int DEFAULT_RAYCAST_COUNT = 50;
     private const string LAYER_NAME_ENTITY = "Entity";
     
     [SerializeField] private EntityStatus _entityStatus;
+
+    private int _entityLayerMask;
     
     private PrefabID _id;
     private ulong _uid;
     private Vector2 _direction;
 
     private float _attackCooldownTimer;
+    private float _retargetTimer;
+    private AEntity _attackTarget;
     private RaycastHit2D[] _scanResults = new RaycastHit2D[DEFAULT_RAYCAST_COUNT];
     
     public EntityStatus EntityStatus => _entityStatus;
     public PrefabID Id => _id;
     public ulong Uid => _uid;
     public bool IsDead => _entityStatus.curHp <= 0;
+    public bool CanAction => _entityStatus.canAction;
     public Team Team => _entityStatus.team;
     public float CurHp => _entityStatus.curHp;
+    public float CurShield => _entityStatus.curShield;
+    public EntityActionType CurAction => _entityStatus.curAction;
 
     public virtual void Init(PrefabID argId, ulong argUid, Team argTeam, EntityInfo argEntityInfo)
     {
+        _entityLayerMask = LayerMask.GetMask(LAYER_NAME_ENTITY);
+        
         _id = argId;
         _uid = argUid;
         _entityStatus.team = argTeam;
@@ -81,6 +111,7 @@ public abstract class AEntity : MonoBehaviour
         _entityStatus.attackRange = argEntityInfo.attackRange;
         _entityStatus.criticalChance = argEntityInfo.criticalChance;
         _entityStatus.moveSpeed = argEntityInfo.moveSpeed;
+        _entityStatus.canAction = true;
     }
 
     protected virtual void Update()
@@ -90,6 +121,12 @@ public abstract class AEntity : MonoBehaviour
         
         if(_attackCooldownTimer > 0)
             _attackCooldownTimer -= Time.deltaTime;
+
+        if(_retargetTimer > 0)
+            _retargetTimer -= Time.deltaTime;
+        
+        if (!_entityStatus.canAction)
+            return;
         
         DoAction();
     }
@@ -103,14 +140,29 @@ public abstract class AEntity : MonoBehaviour
             _direction,
             _scanResults,
             _entityStatus.attackRange,
-            LayerMask.GetMask(LAYER_NAME_ENTITY)
+            _entityLayerMask
         );
 
-        Debug.DrawRay(scanOrigin, _direction * _entityStatus.attackRange, hitCount > 0 ? Color.red : Color.green);
+        //Debug.DrawRay(scanOrigin, _direction * _entityStatus.attackRange, hitCount > 0 ? Color.red : Color.green);
         
         if (hitCount > 0)
         {
-            AEntity target = SelectTarget(hitCount);
+            AEntity target = _attackTarget;
+            bool isTargetInvalid = true;
+            if (target != null)
+            {
+                float distance = Vector2.Distance(transform.position, target.transform.position);
+                bool outOfRange = distance > _entityStatus.attackRange;
+                isTargetInvalid = target == null || target.IsDead || outOfRange;
+            }
+            
+            if (isTargetInvalid || _retargetTimer <= 0f)
+            {
+                target = SelectTarget(hitCount);
+                _attackTarget = target;
+                _retargetTimer = RETARGET_INTERVAL;
+            }
+            
             if (target != null)
             {
                 if (_attackCooldownTimer <= 0)
@@ -121,6 +173,9 @@ public abstract class AEntity : MonoBehaviour
             }
         }
 
+        _retargetTimer = 0f;
+        _attackTarget = null;
+        
         Move();
     }
 
@@ -144,8 +199,10 @@ public abstract class AEntity : MonoBehaviour
             float distance = scanResult.distance;
             float hp = target.CurHp;
 
-            // ???
-            if (distance < minDistance - 0.01f || (Mathf.Abs(distance - minDistance) <= 0.01f) && hp < minHp)
+            bool isCloserTarget = distance < minDistance - EPSILON;
+            bool isSimilarDistance = Mathf.Abs(distance - minDistance) <= EPSILON;
+            bool hasLowerHp = hp < minHp;
+            if (isCloserTarget || (isSimilarDistance && hasLowerHp))
             {
                 minDistance = distance;
                 minHp = hp;
@@ -158,8 +215,10 @@ public abstract class AEntity : MonoBehaviour
 
     protected virtual void Attack(AEntity argTarget)
     {
-        // ???
-        _attackCooldownTimer = 1f / _entityStatus.attackSpeed;
+        _entityStatus.curAction = EntityActionType.Combat;
+        
+        var atkSpeed = Mathf.Max(MIN_ATTACK_SPEED, _entityStatus.attackSpeed);
+        _attackCooldownTimer = 1f / atkSpeed;
 
         float damage = _entityStatus.attack;
         float criticalChance = _entityStatus.criticalChance;
@@ -168,16 +227,31 @@ public abstract class AEntity : MonoBehaviour
             damage *= DEFAULT_CRITICAL_DAMAGE_RATIO;
             Debug.Log("Critical!");
         }
-        argTarget.TakeDamage(damage, this);
+        argTarget.GetEffect(EffectType.Attack, damage, this);
+    }
+
+    protected virtual void GetEffect(EffectType argEffectType, float argAmount, AEntity argSubject)
+    {
+        switch (argEffectType)
+        {
+            case EffectType.Attack:
+                GetDamage(argAmount, argSubject);
+                break;
+            
+            case EffectType.None:
+            default:
+                break;
+        }
     }
     
-    public virtual void TakeDamage(float argDamage, AEntity argAttacker)
+    // Attacker를 지금은 안쓰는데, 나중에 반사 데미지를 받는다던지 하는 경우를 위해 일단 넣어 놓음.
+    public virtual void GetDamage(float argDamage, AEntity argAttacker)
     {
         if (IsDead)
             return;
-        
-        // ???
-        float reducedDamage = argDamage * (100f / (100f + _entityStatus.armor));
+
+        float armor = Mathf.Max(_entityStatus.armor, MIN_ARMOR);
+        float reducedDamage = argDamage * (100f / (100f + armor));
 
         // shield 계산
         if (_entityStatus.curShield > 0)
@@ -201,6 +275,15 @@ public abstract class AEntity : MonoBehaviour
             _entityStatus.curHp = 0;
             Die();
         }
+        else
+        {
+            OnDamaged();
+        }
+    }
+
+    protected virtual void OnDamaged()
+    {
+        
     }
     
     protected virtual void Die()
@@ -217,6 +300,8 @@ public abstract class AEntity : MonoBehaviour
         _uid = INVALID_UID;
         _direction = Vector2.zero;
         _attackCooldownTimer = 0f;
+        _retargetTimer = 0f;
+        _attackTarget = null;
         _scanResults = new RaycastHit2D[DEFAULT_RAYCAST_COUNT];
         EntityInfo emptyEntityInfo = new EntityInfo();
         SetEntityInfo(emptyEntityInfo);
@@ -224,6 +309,7 @@ public abstract class AEntity : MonoBehaviour
     
     protected virtual void Move()
     {
+        _entityStatus.curAction = EntityActionType.Move;
         transform.Translate(_direction * (_entityStatus.moveSpeed * Time.deltaTime));
     }
 }
