@@ -116,7 +116,6 @@ public class EntitySpawner : MonoBehaviour
     void OnSpawn(AEntity argEntity)
     {
         Managers.Game.GameField.AddEntity(argEntity);
-        Debug.Log("Spawn Success!");
     }
 
     [ContextMenu("Spawn")]

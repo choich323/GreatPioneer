@@ -30,18 +30,15 @@ public struct EntityStatus
     public float moveSpeed;
 }
 
-public abstract class AEntity : MonoBehaviour, IDamageable
+public abstract class AEntity : MonoBehaviour
 {
     private const ulong INVALID_UID = 0;
     private const float DEFAULT_CRITICAL_DAMAGE_RATIO = 2f;
-    private const int DEFAULT_RAYCAST_COUNT = 5;
-    private const string LAYER_NAME_DEFAULT = "Default";
-    private const string LAYER_NAME_PLAYER = "Player";
-    private const string LAYER_NAME_ENEMY = "Enemy";
+    private const int DEFAULT_RAYCAST_COUNT = 50;
+    private const string LAYER_NAME_ENTITY = "Entity";
     
     [SerializeField] private EntityStatus _entityStatus;
     
-    private LayerMask _enemyLayer;
     private PrefabID _id;
     private ulong _uid;
     private Vector2 _direction;
@@ -62,28 +59,16 @@ public abstract class AEntity : MonoBehaviour, IDamageable
         _uid = argUid;
         _entityStatus.team = argTeam;
 
-        var layerPlayer = NameToLayer(LAYER_NAME_PLAYER);
-        var layerEnemy = NameToLayer(LAYER_NAME_ENEMY);
-        if (argTeam == Team.Player)
+        if (_entityStatus.team == Team.Player)
         {
             _direction = Vector2.right;
-            gameObject.layer = layerPlayer;
-            _enemyLayer = layerEnemy;
         }
         else
         {
             _direction = Vector2.left;
-            gameObject.layer = layerEnemy;
-            _enemyLayer = layerPlayer;
         }
-        
         SetEntityInfo(argEntityInfo);
         _attackCooldownTimer = 0f;
-    }
-
-    LayerMask NameToLayer(string argName)
-    {
-        return LayerMask.NameToLayer(argName);
     }
     
     void SetEntityInfo(EntityInfo argEntityInfo)
@@ -98,7 +83,7 @@ public abstract class AEntity : MonoBehaviour, IDamageable
         _entityStatus.moveSpeed = argEntityInfo.moveSpeed;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (IsDead)
             return;
@@ -109,23 +94,23 @@ public abstract class AEntity : MonoBehaviour, IDamageable
         DoAction();
     }
 
-    void DoAction()
+    protected virtual void DoAction()
     {
-        var scanOrigin = (Vector2)transform.position + _direction * 0.1f;
+        var scanOrigin = (Vector2)transform.position;
         
         int hitCount = Physics2D.RaycastNonAlloc(
             scanOrigin,
             _direction,
             _scanResults,
             _entityStatus.attackRange,
-            _enemyLayer
+            LayerMask.GetMask(LAYER_NAME_ENTITY)
         );
 
         Debug.DrawRay(scanOrigin, _direction * _entityStatus.attackRange, hitCount > 0 ? Color.red : Color.green);
         
         if (hitCount > 0)
         {
-            IDamageable target = SelectTarget(hitCount);
+            AEntity target = SelectTarget(hitCount);
             if (target != null)
             {
                 if (_attackCooldownTimer <= 0)
@@ -139,16 +124,16 @@ public abstract class AEntity : MonoBehaviour, IDamageable
         Move();
     }
 
-    IDamageable SelectTarget(int argHitCount)
+    protected virtual AEntity SelectTarget(int argHitCount)
     {
-        IDamageable bestTarget = null;
+        AEntity bestTarget = null;
         float minDistance = float.MaxValue;
         float minHp = float.MaxValue;
 
         for (int i = 0; i < argHitCount; i++)
         {
             var scanResult = _scanResults[i];
-            var target = scanResult.collider.GetComponentInParent<IDamageable>();
+            var target = scanResult.collider.GetComponent<AEntity>();
             // 타겟 없음 또는 죽은 상태
             if (target == null || target.IsDead)
                 continue;
@@ -171,7 +156,7 @@ public abstract class AEntity : MonoBehaviour, IDamageable
         return bestTarget;
     }
 
-    protected virtual void Attack(IDamageable argTarget)
+    protected virtual void Attack(AEntity argTarget)
     {
         // ???
         _attackCooldownTimer = 1f / _entityStatus.attackSpeed;
@@ -233,8 +218,6 @@ public abstract class AEntity : MonoBehaviour, IDamageable
         _direction = Vector2.zero;
         _attackCooldownTimer = 0f;
         _scanResults = new RaycastHit2D[DEFAULT_RAYCAST_COUNT];
-        gameObject.layer = NameToLayer(LAYER_NAME_DEFAULT);
-        _enemyLayer = NameToLayer(LAYER_NAME_DEFAULT);
         EntityInfo emptyEntityInfo = new EntityInfo();
         SetEntityInfo(emptyEntityInfo);
     }
