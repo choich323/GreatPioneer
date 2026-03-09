@@ -65,7 +65,8 @@ public abstract class AEntity : MonoBehaviour
     private PrefabID _id;
     private ulong _uid;
     private Vector2 _direction;
-
+    private Transform _targetHqCoreTransform;
+    private EntitySpawner _homeSpawner;
     private float _attackCooldownTimer;
     private float _retargetTimer;
     private AEntity _attackTarget;
@@ -98,6 +99,7 @@ public abstract class AEntity : MonoBehaviour
             _direction = Vector2.left;
         }
         SetEntityInfo(argEntityInfo);
+        
         _attackCooldownTimer = 0f;
     }
     
@@ -114,6 +116,11 @@ public abstract class AEntity : MonoBehaviour
         _entityStatus.canAction = true;
     }
 
+    void SetTargetHqCorePos(Transform argHqCoreTransform)
+    {
+        _targetHqCoreTransform = argHqCoreTransform;
+    }
+    
     protected virtual void Update()
     {
         if (IsDead)
@@ -175,6 +182,8 @@ public abstract class AEntity : MonoBehaviour
 
         _retargetTimer = 0f;
         _attackTarget = null;
+
+        CheckArrival();
         
         Move();
     }
@@ -294,6 +303,11 @@ public abstract class AEntity : MonoBehaviour
         Managers.Pool.Destroy(this, prevId);
     }
 
+    public virtual void Destroy()
+    {
+        Die();
+    }
+
     protected virtual void Reset()
     {
         _id = PrefabID.None;
@@ -305,6 +319,13 @@ public abstract class AEntity : MonoBehaviour
         _scanResults = new RaycastHit2D[DEFAULT_RAYCAST_COUNT];
         EntityInfo emptyEntityInfo = new EntityInfo();
         SetEntityInfo(emptyEntityInfo);
+        _targetHqCoreTransform = null;
+        _attackCooldownTimer = 0f;
+    }
+
+    protected virtual void CheckArrival()
+    {
+        
     }
     
     protected virtual void Move()

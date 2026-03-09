@@ -9,19 +9,28 @@ public class GameField : MonoBehaviour
     
     [SerializeField] private List<Transform> _playerEntitySpawnerPosList;
     [SerializeField] private List<Transform> _enemyEntitySpawnerPosList;
+    [SerializeField] private List<Transform> _playerHqCorePosList;
+    [SerializeField] private List<Transform> _enemyHqCorePosList;
     [SerializeField] private Transform _prefabParent;
+    [SerializeField] private Transform _playerHqPos;
+    [SerializeField] private Transform _enemyHqPos;
 
     private int _playerSpawnerIndex = DEFAULT_INDEX;
     private int _enemySpawnerIndex = DEFAULT_INDEX;
     private Dictionary<Team, List<EntitySpawner>> _spawnerDict = new Dictionary<Team, List<EntitySpawner>>();
     private Dictionary<Team, Dictionary<Type, HashSet<AEntity>>> _entityDict = new Dictionary<Team, Dictionary<Type, HashSet<AEntity>>>();
+    private HeadQuater _playerHq;
+    private HeadQuater _enemyHq;
     
+    public HeadQuater PlayerHq => _playerHq;
+    public HeadQuater EnemyHq => _enemyHq;
     public Transform PrefabParent => _prefabParent;
     
     public void Init()
     {
         InitDict();
         
+        CreateHqs();
         CreateSpawners();
     }
 
@@ -33,13 +42,38 @@ public class GameField : MonoBehaviour
         _entityDict[Team.Player] = new Dictionary<Type, HashSet<AEntity>>();
         _entityDict[Team.Enemy] = new Dictionary<Type, HashSet<AEntity>>();
     }
+
+    void CreateHqs()
+    {
+        CreateHq(Team.Player);
+        CreateHq(Team.Enemy);
+    }
+    
+    void CreateHq(Team argTeam)
+    {
+        var hqObj = Managers.Pool.Instantiate<HeadQuater>(PrefabID.HeadQuater);
+        if (hqObj == null)
+            return;
+        
+        hqObj.transform.parent = PrefabParent;
+        bool isPlayer = argTeam == Team.Player;
+        hqObj.transform.position = isPlayer ? _playerHqPos.position : _enemyHqPos.position;
+        Managers.Data.TryGetPrefabInfo((int)PrefabID.HeadQuater, out var info);
+        var hqInfo = info as HeadQuaterInfo;
+        var hq = hqObj.GetComponent<HeadQuater>();
+        hq.Init(hqInfo, argTeam);
+        
+        if (isPlayer)
+            _playerHq = hq;
+        else
+            _enemyHq = hq;
+    }
     
     void CreateSpawners()
     {
         for(int i = 0; i < _playerEntitySpawnerPosList.Count; i++)
         {
             CreateSpawner(Team.Player, ref _playerSpawnerIndex);
-            
         }
 
         for (int i = 0; i < _enemyEntitySpawnerPosList.Count; i++)
@@ -92,5 +126,59 @@ public class GameField : MonoBehaviour
         {
             entitySet.Remove(argEntity);
         }
+    }
+
+    public bool IsGameOver()
+    {
+        return _playerHq.Hp <= 0 || _enemyHq.Hp <= 0;
+    }
+    
+    private void Reset()
+    {
+        DestroyAll();
+    }
+    
+    void DestroyAll()
+    {
+        DestroySpawners();
+        DestroyHqs();
+        DestroyEntities();
+        _playerSpawnerIndex = DEFAULT_INDEX;
+        _enemySpawnerIndex = DEFAULT_INDEX;
+    }
+    
+    void DestroySpawners()
+    {
+        foreach (var spawnerList in _spawnerDict)
+        {
+            foreach (var spawner in spawnerList.Value)
+            {
+                spawner.Destroy();
+            }
+        }
+        _spawnerDict.Clear();
+    }
+
+    void DestroyHqs()
+    {
+        _playerHq.Destroy();
+        _enemyHq.Destroy();
+        _playerHq = null;
+        _enemyHq = null;
+    }
+    
+    void DestroyEntities()
+    {
+        foreach(var entityDict2 in _entityDict)
+        {
+            foreach (var entitySet in entityDict2.Value)
+            {
+                foreach (var entity in entitySet.Value)
+                {
+                    entity.Destroy();
+                }
+            }
+        }
+        _entityDict.Clear();
     }
 }

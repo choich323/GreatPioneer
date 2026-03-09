@@ -41,7 +41,7 @@ public class EntitySpawner : MonoBehaviour
         
         foreach (var slot in _slotList)
         {
-            slot.ResetSlot();
+            slot.Destroy();
         }
         _slotList.Clear();
         
@@ -118,6 +118,12 @@ public class EntitySpawner : MonoBehaviour
         Managers.Game.GameField.AddEntity(argEntity);
     }
 
+    public void Destroy()
+    {
+        ResetSpawner();
+        Managers.Pool.Destroy(this, PrefabID.EntitySpawner);
+    }
+    
     [ContextMenu("Spawn")]
     void TestSpawn()
     {

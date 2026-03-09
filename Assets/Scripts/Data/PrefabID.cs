@@ -3,7 +3,9 @@ using UnityEngine;
 public enum PrefabID
 {
     None = 0,
-        
+    
+    HeadQuater = 51,
+    
     // Entity
     Pioneer = 101,
     
@@ -11,5 +13,5 @@ public enum PrefabID
         
     // spawner
     EntitySpawner = 5001,
-        
+    
 }

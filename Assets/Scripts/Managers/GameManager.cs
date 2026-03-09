@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public GameField GameField => _gameField;
     public ulong CurUid => _uid;
     public int SlotCountMax => _slotCountMax;
+    public bool IsGameOver => _gameField.IsGameOver();
         
     public void Init()
     {
@@ -28,5 +29,13 @@ public class GameManager : MonoBehaviour
     public void SetSlotCount(int argCount)
     {
         _slotCountMax = argCount;
+    }
+
+    public void EndGame(bool isPlayerWin)
+    {
+        if(isPlayerWin)
+            Debug.Log($"You Win!");
+        else
+            Debug.Log($"You Lose!");
     }
 }
