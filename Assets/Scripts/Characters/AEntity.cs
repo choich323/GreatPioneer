@@ -82,7 +82,7 @@ public abstract class AEntity : MonoBehaviour
     public float CurShield => _entityStatus.curShield;
     public EntityActionType CurAction => _entityStatus.curAction;
 
-    public virtual void Init(PrefabID argId, ulong argUid, Team argTeam, EntityInfo argEntityInfo)
+    public virtual void Init(PrefabID argId, ulong argUid, Team argTeam, EntityInfo argEntityInfo, EntitySpawner argHomeSpawner)
     {
         _entityLayerMask = LayerMask.GetMask(LAYER_NAME_ENTITY);
         
@@ -99,7 +99,8 @@ public abstract class AEntity : MonoBehaviour
             _direction = Vector2.left;
         }
         SetEntityInfo(argEntityInfo);
-        
+        _homeSpawner = argHomeSpawner;
+        _targetHqCoreTransform = argHomeSpawner.TargetHqCoreTransform;
         _attackCooldownTimer = 0f;
     }
     
@@ -114,11 +115,6 @@ public abstract class AEntity : MonoBehaviour
         _entityStatus.criticalChance = argEntityInfo.criticalChance;
         _entityStatus.moveSpeed = argEntityInfo.moveSpeed;
         _entityStatus.canAction = true;
-    }
-
-    void SetTargetHqCorePos(Transform argHqCoreTransform)
-    {
-        _targetHqCoreTransform = argHqCoreTransform;
     }
     
     protected virtual void Update()
@@ -320,12 +316,25 @@ public abstract class AEntity : MonoBehaviour
         EntityInfo emptyEntityInfo = new EntityInfo();
         SetEntityInfo(emptyEntityInfo);
         _targetHqCoreTransform = null;
+        _homeSpawner = null;
         _attackCooldownTimer = 0f;
     }
 
     protected virtual void CheckArrival()
     {
+        if (_targetHqCoreTransform == null) return;
         
+        float dist = Mathf.Abs(transform.position.x - _targetHqCoreTransform.position.x);
+        
+        const float errorThreshold = 0.5f;
+        if (dist < errorThreshold)
+        {
+            var field = Managers.Game.GameField;
+            var hq = _entityStatus.team == Team.Player ? field.EnemyHq : field.PlayerHq; 
+            hq.OnHqDamaged((int)_entityStatus.attack);
+            
+            Die();
+        }
     }
     
     protected virtual void Move()

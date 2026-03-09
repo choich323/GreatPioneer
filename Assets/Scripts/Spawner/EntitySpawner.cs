@@ -12,12 +12,16 @@ public class EntitySpawner : MonoBehaviour
     private List<Coroutine> _coroutineList = new List<Coroutine>();
     private int _slotIndex = DEFAULT_SLOT_INDEX;
     private Team _team;
+    private Transform _targetHqCoreTransform;
     
-    public void Init(Team argTeam)
+    public Transform TargetHqCoreTransform => _targetHqCoreTransform;
+    
+    public void Init(Team argTeam, Transform argTargetHqCoreTransform)
     {
         ResetSpawner();
         
         _team = argTeam;
+        _targetHqCoreTransform = argTargetHqCoreTransform;
         
         for (int i = 0; i < Managers.Game.SlotCountMax; i++)
         {
@@ -107,7 +111,7 @@ public class EntitySpawner : MonoBehaviour
             entityObj.transform.position = transform.position;
             entityObj.transform.SetParent(Managers.Game.GameField.PrefabParent);
             var entity = entityObj.GetComponent<AEntity>();
-            entity.Init(argPrefabId, Managers.Game.GetNewUid(), _team, argEntityInfo);
+            entity.Init(argPrefabId, Managers.Game.GetNewUid(), _team, argEntityInfo, this);
             
             OnSpawn(entity);
         }

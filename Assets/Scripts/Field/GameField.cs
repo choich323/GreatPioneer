@@ -14,9 +14,7 @@ public class GameField : MonoBehaviour
     [SerializeField] private Transform _prefabParent;
     [SerializeField] private Transform _playerHqPos;
     [SerializeField] private Transform _enemyHqPos;
-
-    private int _playerSpawnerIndex = DEFAULT_INDEX;
-    private int _enemySpawnerIndex = DEFAULT_INDEX;
+    
     private Dictionary<Team, List<EntitySpawner>> _spawnerDict = new Dictionary<Team, List<EntitySpawner>>();
     private Dictionary<Team, Dictionary<Type, HashSet<AEntity>>> _entityDict = new Dictionary<Team, Dictionary<Type, HashSet<AEntity>>>();
     private HeadQuater _playerHq;
@@ -71,31 +69,27 @@ public class GameField : MonoBehaviour
     
     void CreateSpawners()
     {
-        for(int i = 0; i < _playerEntitySpawnerPosList.Count; i++)
+        for(int i = 0; i < DEFAULT_SPAWNER_COUNT; i++)
         {
-            CreateSpawner(Team.Player, ref _playerSpawnerIndex);
-        }
-
-        for (int i = 0; i < _enemyEntitySpawnerPosList.Count; i++)
-        {
-            CreateSpawner(Team.Enemy, ref _enemySpawnerIndex);
+            CreateSpawner(Team.Player, i);
+            CreateSpawner(Team.Enemy, i);
         }
     }
 
-    EntitySpawner CreateSpawner(Team argTeam, ref int argSpawnerIndex)
+    EntitySpawner CreateSpawner(Team argTeam, int argSpawnerIndex)
     {
         var spawnerObj = Managers.Pool.Instantiate<EntitySpawner>(PrefabID.EntitySpawner);
         if (spawnerObj == null)
             return null;
         
-        int spawnerPosIndex = argSpawnerIndex % DEFAULT_SPAWNER_COUNT;
-        var posList = argTeam == Team.Player ? _playerEntitySpawnerPosList : _enemyEntitySpawnerPosList;
-        var pos = posList[spawnerPosIndex].position;
+        bool isPlayer = argTeam == Team.Player;
+        var posList = isPlayer ? _playerEntitySpawnerPosList : _enemyEntitySpawnerPosList;
+        var pos = posList[argSpawnerIndex].position;
         spawnerObj.transform.position = pos;
         spawnerObj.transform.SetParent(_prefabParent);
         var spawner = spawnerObj.GetComponent<EntitySpawner>();
-        argSpawnerIndex++;
-        spawner.Init(argTeam);
+        var targetHqCoreTransform = isPlayer ? _enemyHqCorePosList[argSpawnerIndex] : _playerHqCorePosList[argSpawnerIndex];
+        spawner.Init(argTeam, targetHqCoreTransform);
         
         return spawner;
     }
@@ -143,8 +137,6 @@ public class GameField : MonoBehaviour
         DestroySpawners();
         DestroyHqs();
         DestroyEntities();
-        _playerSpawnerIndex = DEFAULT_INDEX;
-        _enemySpawnerIndex = DEFAULT_INDEX;
     }
     
     void DestroySpawners()

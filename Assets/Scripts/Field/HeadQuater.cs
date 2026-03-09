@@ -8,8 +8,8 @@ public class HeadQuater : MonoBehaviour
     private int _shield;
     private Team _team;
     
-    public int Hp { get; private set; }
-    public int Shield { get; private set; }
+    public int Hp => _hp;
+    public int Shield => _shield;
     
     public void Init(HeadQuaterInfo argInfo, Team argTeam)
     {
@@ -17,16 +17,6 @@ public class HeadQuater : MonoBehaviour
         _hp = argInfo.hp;
         _shield = argInfo.shield;
         _team = argTeam;
-    }
-    
-    public void SetHp(int argHp)
-    {
-        _hp = argHp;
-    }
-
-    public void SetShield(int argShield)
-    {
-        _shield = argShield;
     }
 
     public void OnHqDamaged(int argDamage)
@@ -40,14 +30,16 @@ public class HeadQuater : MonoBehaviour
             if (_shield > argDamage)
             {
                 _shield -= argDamage;
+                argDamage = 0;
             }
             else
             {
-                _hp -= argDamage - _shield;
+                argDamage -= _shield;
                 _shield = 0;
             }
         }
-
+        
+        _hp -= argDamage;
         if (_hp <= 0)
         {
             bool isPlayerWin = _team != Team.Player;
@@ -70,5 +62,11 @@ public class HeadQuater : MonoBehaviour
     {
         Reset();
         Managers.Pool.Destroy(this, PrefabID.HeadQuater);
+    }
+
+    [ContextMenu("ShowStatus")]
+    public void TestShowStatus()
+    {
+        Debug.Log($"Hp: {_hp}, Shield: {_shield}");
     }
 }
