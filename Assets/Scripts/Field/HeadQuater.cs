@@ -6,10 +6,14 @@ public class HeadQuater : MonoBehaviour
     private int _maxHp;
     private int _hp;
     private int _shield;
+    private long _gold;
+    private int _mineral;
     private Team _team;
     
     public int Hp => _hp;
     public int Shield => _shield;
+    public long Gold => _gold;
+    public int Mineral => _mineral;
     
     public void Init(HeadQuaterInfo argInfo, Team argTeam)
     {
@@ -50,6 +54,31 @@ public class HeadQuater : MonoBehaviour
     public float GetHqHpRatio()
     {
         return (float)_hp / _maxHp;
+    }
+
+    public float GetShieldRatio()
+    {
+        return (float)_shield / _maxHp;
+    }
+
+    public void EarnGold(long argGold)
+    {
+        _gold += argGold;
+    }
+
+    public void ConsumeGold(long argGold)
+    {
+        _gold -= argGold;
+    }
+
+    public void EarnMineral(int argMineral)
+    {
+        _mineral += argMineral;
+    }
+
+    public void ConsumeMineral(int argMineral)
+    {
+        _mineral -= argMineral;
     }
     
     public void Reset()

@@ -21,6 +21,13 @@ public class CameraController : MonoBehaviour
     private float _targetX;
     private float _lastDeltaX; // 마지막 프레임의 이동량
 
+    private void Awake()
+    {
+        if(_mainCam == null)
+            _mainCam = Camera.main;
+        _targetX = transform.position.x;
+    }
+
     void Update()
     {
         var pointer = Pointer.current;
