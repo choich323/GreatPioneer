@@ -5,10 +5,9 @@ public class GameManager : MonoBehaviour
     private const ulong INVALID_UID = 0;
     private const int DEFAULT_SLOT_COUNT = 2;
     
-    [SerializeField] private GameField _gameField;
-
     private ulong _uid = INVALID_UID;
     private int _slotCountMax = DEFAULT_SLOT_COUNT;
+    private GameField _gameField;
     
     public GameField GameField => _gameField;
     public ulong CurUid => _uid;
@@ -17,6 +16,13 @@ public class GameManager : MonoBehaviour
         
     public void Init()
     {
+        var gameFieldObj = Managers.Pool.Instantiate<GameField>(PrefabID.GameField);
+        if (gameFieldObj == null)
+        {
+            Debug.LogError("Game field could not be instantiated.");
+            return;
+        }
+        _gameField = gameFieldObj.GetComponent<GameField>();
         _gameField.Init();
     }
     

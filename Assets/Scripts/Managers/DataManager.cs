@@ -37,6 +37,7 @@ public class DataManager : MonoBehaviour
         {
             return prefabId;
         }
+        Debug.LogWarning("Invalid prefab ID");
         return PrefabID.None;
     }
     

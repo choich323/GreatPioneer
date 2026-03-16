@@ -11,7 +11,8 @@ public class GameField : MonoBehaviour
     [SerializeField] private List<Transform> _enemyEntitySpawnerPosList;
     [SerializeField] private List<Transform> _playerHqCorePosList;
     [SerializeField] private List<Transform> _enemyHqCorePosList;
-    [SerializeField] private Transform _prefabParent;
+    [SerializeField] private Transform _hqParent;
+    [SerializeField] private Transform _spawnerParent;
     [SerializeField] private Transform _playerHqPos;
     [SerializeField] private Transform _enemyHqPos;
     
@@ -22,7 +23,6 @@ public class GameField : MonoBehaviour
     
     public HeadQuater PlayerHq => _playerHq;
     public HeadQuater EnemyHq => _enemyHq;
-    public Transform PrefabParent => _prefabParent;
     
     public void Init()
     {
@@ -53,7 +53,7 @@ public class GameField : MonoBehaviour
         if (hqObj == null)
             return;
         
-        hqObj.transform.parent = PrefabParent;
+        hqObj.transform.SetParent(_hqParent);
         bool isPlayer = argTeam == Team.Player;
         hqObj.transform.position = isPlayer ? _playerHqPos.position : _enemyHqPos.position;
         Managers.Data.TryGetPrefabInfo((int)PrefabID.HeadQuater, out var info);
@@ -86,7 +86,7 @@ public class GameField : MonoBehaviour
         var posList = isPlayer ? _playerEntitySpawnerPosList : _enemyEntitySpawnerPosList;
         var pos = posList[argSpawnerIndex].position;
         spawnerObj.transform.position = pos;
-        spawnerObj.transform.SetParent(_prefabParent);
+        spawnerObj.transform.SetParent(_spawnerParent);
         var spawner = spawnerObj.GetComponent<EntitySpawner>();
         var targetHqCoreTransform = isPlayer ? _enemyHqCorePosList[argSpawnerIndex] : _playerHqCorePosList[argSpawnerIndex];
         spawner.Init(argTeam, targetHqCoreTransform);

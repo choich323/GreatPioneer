@@ -4,6 +4,7 @@ public enum PrefabID
 {
     None = 0,
     
+    GameField = 50,
     HeadQuater = 51,
     
     // Entity

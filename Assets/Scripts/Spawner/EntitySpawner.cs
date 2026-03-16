@@ -7,6 +7,8 @@ public class EntitySpawner : MonoBehaviour
 {
     private const int DEFAULT_SLOT_INDEX = 0;
     
+    [SerializeField] private Transform _entityParent;
+    
     // slot과 coroutine의 인덱스를 동일하게 맞춰야 한다.
     private List<EntitySpawnSlot> _slotList = new List<EntitySpawnSlot>();
     private List<Coroutine> _coroutineList = new List<Coroutine>();
@@ -109,7 +111,7 @@ public class EntitySpawner : MonoBehaviour
         if (entityObj != null)
         {
             entityObj.transform.position = transform.position;
-            entityObj.transform.SetParent(Managers.Game.GameField.PrefabParent);
+            entityObj.transform.SetParent(_entityParent);
             var entity = entityObj.GetComponent<AEntity>();
             entity.Init(argPrefabId, Managers.Game.GetNewUid(), _team, argEntityInfo, this);
             
