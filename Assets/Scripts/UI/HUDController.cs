@@ -37,7 +37,7 @@ public class HUDController : MonoBehaviour
     private float _elpasedTime = 0f;
     private bool _isPaused = false;
     private int _curSpeed = 1;
-
+    
     private void Update()
     {
         UpdatePlayerStatus();

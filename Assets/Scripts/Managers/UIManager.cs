@@ -13,28 +13,35 @@ public class UIManager : MonoBehaviour
 
     void CreateHUD()
     {
-        var obj = Managers.Pool.Instantiate<HUDController>(PrefabID.UITopHUDPanel);
-        if (obj == null)
+        Managers.Data.TryGetPrefabInfo((int)PrefabID.UITopHUDPanel, out var hudInfo);
+        var hudObj = Instantiate<GameObject>(hudInfo.prefab, _uiParent);
+        if (hudObj == null)
         {
-            Debug.LogError("Failed to instantiate HUD");
+            Debug.LogError("UIManager hudObj is null");
             return;
         }
-        obj.transform.SetParent(_uiParent);
-        obj.transform.localPosition = Vector3.zero;
-        var rect = obj.GetComponent<RectTransform>();
+        
+        hudObj.transform.localPosition = Vector3.zero;
+        var rect = hudObj.GetComponent<RectTransform>();
         rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
-        _topHUDController = obj.GetComponent<HUDController>();
+        _topHUDController = hudObj.GetComponent<HUDController>();
     }
 
     void DestroyHUD()
     {
-        Managers.Pool.Destroy(_topHUDController, PrefabID.UITopHUDPanel);
+        Destroy(_topHUDController);
         _topHUDController = null;
     }
 
-    public void SetParentToUI(RectTransform argUiParent)
-    {
-        argUiParent.SetParent(_uiParent);
+    public void AttachUI(RectTransform argTarget, RectTransform argParent) {
+        argTarget.SetParent(argParent);
+    
+        argTarget.anchorMin = Vector2.zero;
+        argTarget.anchorMax = Vector2.one;
+        argTarget.offsetMin = Vector2.zero;
+        argTarget.offsetMax = Vector2.zero;
+        argTarget.localScale = Vector3.one;
+        argTarget.localPosition = Vector3.zero;
     }
 }
