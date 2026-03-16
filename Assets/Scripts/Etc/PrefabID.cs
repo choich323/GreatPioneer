@@ -15,4 +15,8 @@ public enum PrefabID
     // spawner
     EntitySpawner = 5001,
     
+    
+    // UI
+    UITopHUDPanel = 10001,
+    
 }

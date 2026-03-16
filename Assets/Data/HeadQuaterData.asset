@@ -15,4 +15,4 @@ MonoBehaviour:
   hqInfoList:
   - prefab: {fileID: 6391996127989187439, guid: 159549eabdb56174db40bdc2876da3be, type: 3}
     hp: 100
-    shield: 3
+    shield: 0

@@ -20,6 +20,8 @@ public class DataManager : MonoBehaviour
             if (data == null) continue;
             foreach (var info in data.GetInfoList())
             {
+                if (info == null) continue;
+                if (info.prefab == null) continue;
                 var key = (int)ConvertStringToPrefabID(info.prefab.name);
                 if (key == (int)PrefabID.None) continue;
                 
@@ -37,7 +39,7 @@ public class DataManager : MonoBehaviour
         {
             return prefabId;
         }
-        Debug.LogWarning("Invalid prefab ID");
+        Debug.LogError("Invalid prefab ID");
         return PrefabID.None;
     }
     
