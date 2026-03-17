@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 048642c3014866b448d3c926a4690f8f, type: 3}
   m_Name: PopupData
   m_EditorClassIdentifier: Assembly-CSharp::PopupData
-  popupInfoList: []
+  popupInfoList:
+  - prefab: {fileID: 3670023552181830621, guid: 58b8b5f189a863f4684707e7bded288a, type: 3}

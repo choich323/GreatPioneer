@@ -36,7 +36,6 @@ public class HUDController : MonoBehaviour
 
     private float _elpasedTime = 0f;
     private bool _isPaused = false;
-    private int _curSpeed = 1;
     
     private void Update()
     {
@@ -96,19 +95,25 @@ public class HUDController : MonoBehaviour
         }
     }
     
-    public void OnClickPause()
+    public void OnBtnPause()
     {
         _isPaused = !_isPaused;
-
+        
+        var gm = Managers.Game;
         if (_isPaused)
         {
-            Time.timeScale = 0f;
+            gm.PauseGame();
             _pauseBtnImage.sprite = _playBtnSprite;
         }
         else
         {
-            Time.timeScale = _curSpeed;
+            gm.ResumeGame();
             _pauseBtnImage.sprite = _pauseBtnSprite;
         }
+    }
+
+    public void OnBtnMenu()
+    {
+        Managers.UI.Popup.OpenPopup<IngameMenu>(PrefabID.UIIngameMenu);
     }
 }

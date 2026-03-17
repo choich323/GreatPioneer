@@ -19,4 +19,5 @@ public enum PrefabID
     // UI
     UITopHUDPanel = 10001,
     
+    UIIngameMenu = 10010,
 }

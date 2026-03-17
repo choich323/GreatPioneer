@@ -4,9 +4,11 @@ public class GameManager : MonoBehaviour
 {
     private const ulong INVALID_UID = 0;
     private const int DEFAULT_SLOT_COUNT = 2;
+    private const int DEFAULT_GAME_SPEED = 1;
     
     private ulong _uid = INVALID_UID;
     private int _slotCountMax = DEFAULT_SLOT_COUNT;
+    private int _curGameSpeed = DEFAULT_GAME_SPEED;
     private GameField _gameField;
     
     public GameField GameField => _gameField;
@@ -43,5 +45,20 @@ public class GameManager : MonoBehaviour
             Debug.Log($"You Win!");
         else
             Debug.Log($"You Lose!");
+    }
+
+    public void SetGameSpeed(int argSpeed)
+    {
+        _curGameSpeed = argSpeed;
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0f;
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = _curGameSpeed;
     }
 }
