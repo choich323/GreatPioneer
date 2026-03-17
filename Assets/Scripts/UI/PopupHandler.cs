@@ -71,14 +71,7 @@ public class PopupHandler
         if (_popupStack.Count <= 0) return;
         
         APopup popup = _popupStack.Pop();
-        popup.Close();
         popup.gameObject.SetActive(false);
-
-        if (_popupStack.Count > 0)
-        {
-            var top = _popupStack.Peek();
-            top.gameObject.SetActive(true);
-        }
         
         CheckVisibility();
     }

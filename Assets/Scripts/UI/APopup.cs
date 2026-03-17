@@ -41,7 +41,7 @@ public abstract class APopup : MonoBehaviour
 
         if (_dimmedBg != null && _inputMode == PopupInputMode.Modeless)
         {
-            if(_dimmedBg.TryGetComponent<Button>(out var btn));
+            if(_dimmedBg.TryGetComponent<Button>(out var btn))
             {
                 btn.onClick.AddListener(Close);
             }
