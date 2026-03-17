@@ -11,6 +11,22 @@ public class PopupHandler
     {
         
     }
+
+    public void OnUpdate()
+    {
+        HandleEscapeKey();
+    }
+
+    void HandleEscapeKey()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (_popupStack.Count > 0 && _popupStack.Peek().InputMode == PopupInputMode.Modeless)
+            {
+                ClosePopup();
+            }
+        }
+    }
     
     public T OpenPopup<T>(PrefabID argPrefabID) where T : APopup
     {

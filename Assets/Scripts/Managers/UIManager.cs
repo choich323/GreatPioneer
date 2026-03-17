@@ -17,6 +17,11 @@ public class UIManager : MonoBehaviour
         CreateHUD();
     }
 
+    void Update()
+    {
+        _popupHandler.OnUpdate();
+    }
+    
     void CreatePopupHandler()
     {
         _popupHandler = new PopupHandler();
