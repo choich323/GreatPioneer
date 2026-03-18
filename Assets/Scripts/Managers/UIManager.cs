@@ -47,6 +47,7 @@ public class UIManager : MonoBehaviour
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
         }
+        _topHUDController.Init();
     }
 
     public GameObject InstantiateUIWithoutPool(PrefabID argPrefabID)

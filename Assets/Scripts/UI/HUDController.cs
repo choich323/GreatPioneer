@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+using System.Collections.Generic;
 
 public class HUDController : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class HUDController : MonoBehaviour
     private const float HP_LOW = 0.3f;
     private const float HOUR_TO_SECOND  = 3600f;
     private const float MINUTE_TO_SECOND  = 60f;
+
     
     [Header("Player HQ UI")] 
     [SerializeField] private Slider _hpSlider;
@@ -34,8 +37,26 @@ public class HUDController : MonoBehaviour
     [SerializeField] private Sprite _pauseBtnSprite;
     [SerializeField] private Sprite _playBtnSprite;
 
+    [Header("Menu Button")]
+    [SerializeField] private GameObject _subBtnGroup;
+    [SerializeField] private List<CanvasGroup> _subBtnCanvasGroupList;
+    [SerializeField] private float _subMenuAnimPlayTime = 0.1f;
+
     private float _elpasedTime = 0f;
     private bool _isPaused = false;
+    private bool _isSubMenuOpen = false;
+    private Coroutine _menuAnimCoroutine;
+
+    public void Init()
+    {
+        _subBtnGroup.SetActive(false);
+        foreach (var cg in _subBtnCanvasGroupList)
+        {
+            cg.alpha = 0;
+            cg.interactable = false;
+            cg.blocksRaycasts = false;
+        }
+    }
     
     private void Update()
     {
@@ -114,6 +135,48 @@ public class HUDController : MonoBehaviour
 
     public void OnBtnMenu()
     {
-        Managers.UI.Popup.OpenPopup<IngameMenu>(PrefabID.UIIngameMenu);
+        if (_menuAnimCoroutine != null)
+        {
+            StopCoroutine(_menuAnimCoroutine);
+        }
+
+        _isSubMenuOpen = !_isSubMenuOpen;
+        _menuAnimCoroutine = StartCoroutine(CoAnimateSubMenu(_isSubMenuOpen));
+    }
+
+    IEnumerator CoAnimateSubMenu(bool argOpen) {
+        if (argOpen)
+        {
+            _subBtnGroup.SetActive(true);
+        }
+
+        float duration = _subMenuAnimPlayTime;
+
+        int count = _subBtnCanvasGroupList.Count;
+        for (int i = 0; i < count; i++)
+        {
+            int index = argOpen ? i : count - 1 - i;
+            var cg = _subBtnCanvasGroupList[index];
+
+            float elapsed = 0;
+            float startAlpha = cg.alpha;
+            float endAlpha = argOpen ? 1f : 0f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                cg.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsed / duration);
+                yield return null;
+            }
+            
+            cg.alpha = endAlpha;
+            cg.interactable = argOpen;
+            cg.blocksRaycasts = argOpen;
+        }
+
+        if (!argOpen)
+        {
+            _subBtnGroup.SetActive(false);
+        }
     }
 }
