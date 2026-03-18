@@ -90,6 +90,7 @@ public class GameField : MonoBehaviour
         var spawner = spawnerObj.GetComponent<EntitySpawner>();
         var targetHqCoreTransform = isPlayer ? _enemyHqCorePosList[argSpawnerIndex] : _playerHqCorePosList[argSpawnerIndex];
         spawner.Init(argTeam, targetHqCoreTransform);
+        _spawnerDict[argTeam].Add(spawner);
         
         return spawner;
     }
@@ -116,7 +117,7 @@ public class GameField : MonoBehaviour
         Team team = es.team;
         Type type = argEntity.GetType();
 
-        if (_entityDict[team].TryGetValue(type, out var entitySet))
+        if (_entityDict.ContainsKey(team) && _entityDict[team].TryGetValue(type, out var entitySet))
         {
             entitySet.Remove(argEntity);
         }
@@ -127,7 +128,7 @@ public class GameField : MonoBehaviour
         return _playerHq.Hp <= 0 || _enemyHq.Hp <= 0;
     }
     
-    private void Reset()
+    public void ResetField()
     {
         DestroyAll();
     }
@@ -161,16 +162,22 @@ public class GameField : MonoBehaviour
     
     void DestroyEntities()
     {
+        List<AEntity> entityList = new List<AEntity>();
         foreach(var entityDict2 in _entityDict)
         {
             foreach (var entitySet in entityDict2.Value)
             {
                 foreach (var entity in entitySet.Value)
                 {
-                    entity.Destroy();
+                    entityList.Add(entity);
                 }
             }
         }
         _entityDict.Clear();
+
+        foreach (var entity in entityList)
+        {
+            entity.Destroy();
+        }
     }
 }

@@ -355,7 +355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   _minX: -5
-  _maxX: 25
+  _maxX: 22
   _mainCam: {fileID: 810939475}
   _smoothSpeed: 0.22
   _slidingAmount: 3
@@ -589,6 +589,10 @@ PrefabInstance:
       objectReference: {fileID: 530437834}
     - target: {fileID: -4555702561471690154, guid: 92875701fbdf0194485f5486887bd8c0, type: 3}
       propertyPath: _uiParent
+      value: 
+      objectReference: {fileID: 1761534154}
+    - target: {fileID: -4555702561471690154, guid: 92875701fbdf0194485f5486887bd8c0, type: 3}
+      propertyPath: _hudParent
       value: 
       objectReference: {fileID: 1761534154}
     - target: {fileID: -4555702561471690154, guid: 92875701fbdf0194485f5486887bd8c0, type: 3}

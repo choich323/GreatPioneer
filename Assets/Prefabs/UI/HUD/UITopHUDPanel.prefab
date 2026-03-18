@@ -271,6 +271,9 @@ MonoBehaviour:
   - {fileID: 6615802414556542639}
   - {fileID: 949914359573748057}
   _subMenuAnimPlayTime: 0.1
+  _optionBtn: {fileID: 3588284495293880978}
+  _restartBtn: {fileID: 3779359407772689450}
+  _exitBtn: {fileID: 311885883465777659}
 --- !u!1 &6110142510842366306
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,6 +1118,17 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &311885883465777659 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4656433339969484919, guid: ed684385088fdff4ea3c805ff91dba41, type: 3}
+  m_PrefabInstance: {fileID: 4957042609223989644}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8773453536091839399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!224 &919937422032022983 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5192287305037763659, guid: ed684385088fdff4ea3c805ff91dba41, type: 3}
@@ -1131,6 +1145,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &3588284495293880978 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8432662931057795870, guid: ed684385088fdff4ea3c805ff91dba41, type: 3}
+  m_PrefabInstance: {fileID: 4957042609223989644}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 181052864465168844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &3779359407772689450 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8122251440536624550, guid: ed684385088fdff4ea3c805ff91dba41, type: 3}
+  m_PrefabInstance: {fileID: 4957042609223989644}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922618103100980625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &5922618103100980625 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1656108827908817949, guid: ed684385088fdff4ea3c805ff91dba41, type: 3}

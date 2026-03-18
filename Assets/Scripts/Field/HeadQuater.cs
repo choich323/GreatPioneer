@@ -47,7 +47,7 @@ public class HeadQuater : MonoBehaviour
         if (_hp <= 0)
         {
             bool isPlayerWin = _team != Team.Player;
-            gm.EndGame(isPlayerWin);
+            gm.EndStage(isPlayerWin);
         }
     }
 
@@ -83,8 +83,12 @@ public class HeadQuater : MonoBehaviour
     
     public void Reset()
     {
+        _maxHp = 0;
         _hp = 0;
         _shield = 0;
+        _gold = 0;
+        _mineral = 0;
+        _team = Team.None;
     }
     
     public void Destroy()

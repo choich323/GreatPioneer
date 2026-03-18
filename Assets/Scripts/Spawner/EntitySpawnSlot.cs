@@ -10,8 +10,6 @@ public class EntitySpawnSlot
     private int _slotIndex;
     private PrefabID _targetId;
     private float _progress;
-
-    // slotId, targetId
     private Action<int> _onTargetChange;
     
     public void Init(int argSlotIndex, Action<int> argOnTargetChange)

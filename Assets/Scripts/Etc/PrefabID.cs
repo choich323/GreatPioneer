@@ -18,4 +18,5 @@ public enum PrefabID
     
     // UI
     UITopHUDPanel = 10001,
+    UIConfirm,
 }

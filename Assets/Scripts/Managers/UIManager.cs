@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private RectTransform _uiParent;
+    [SerializeField] private RectTransform _hudParent;
     [SerializeField] private RectTransform _popupParent;
 
     private PopupHandler _popupHandler;
@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour
         }
         _topHUDController = obj.GetComponent<HUDController>();
         var hudTransform = _topHUDController.transform;
-        hudTransform.SetParent(_uiParent);
+        hudTransform.SetParent(_hudParent);
         hudTransform.localPosition = Vector3.zero;
         hudTransform.localScale = Vector3.one;
         var rect = obj.GetComponent<RectTransform>();

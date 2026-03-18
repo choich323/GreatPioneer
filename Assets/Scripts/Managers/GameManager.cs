@@ -10,12 +10,14 @@ public class GameManager : MonoBehaviour
     private int _slotCountMax = DEFAULT_SLOT_COUNT;
     private int _curGameSpeed = DEFAULT_GAME_SPEED;
     private GameField _gameField;
+    private bool _isPaused = false;
     
     public GameField GameField => _gameField;
     public ulong CurUid => _uid;
     public int SlotCountMax => _slotCountMax;
     public bool IsGameOver => _gameField.IsGameOver();
-        
+    public bool IsPaused => _isPaused;
+    
     public void Init()
     {
         var gameFieldObj = Managers.Pool.Instantiate<GameField>(PrefabID.GameField);
@@ -39,7 +41,7 @@ public class GameManager : MonoBehaviour
         _slotCountMax = argCount;
     }
 
-    public void EndGame(bool isPlayerWin)
+    public void EndStage(bool isPlayerWin)
     {
         if(isPlayerWin)
             Debug.Log($"You Win!");
@@ -55,10 +57,21 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         Time.timeScale = 0f;
+        _isPaused = true;
     }
 
     public void ResumeGame()
     {
         Time.timeScale = _curGameSpeed;
+        _isPaused = false;
+    }
+
+    public void RestartStage()
+    {
+        _uid = INVALID_UID;
+        _slotCountMax = DEFAULT_SLOT_COUNT;
+        _curGameSpeed = DEFAULT_GAME_SPEED;
+        _gameField.ResetField();
+        _gameField.Init();
     }
 }

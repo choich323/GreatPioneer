@@ -56,17 +56,16 @@ public abstract class AEntity : MonoBehaviour
     private const float MIN_ATTACK_SPEED = 0.001f;
     private const float MIN_ARMOR = -99f;
     private const int DEFAULT_RAYCAST_COUNT = 50;
+    private const int INVALID_SPAWNER_INDEX = -1;
     private const string LAYER_NAME_ENTITY = "Entity";
     
-    [SerializeField] private EntityStatus _entityStatus;
-
+    private EntityStatus _entityStatus;
     private int _entityLayerMask;
-    
     private PrefabID _id;
     private ulong _uid;
     private Vector2 _direction;
     private Transform _targetHqCoreTransform;
-    private EntitySpawner _homeSpawner;
+    private int _homeSpawnerIndex;
     private float _attackCooldownTimer;
     private float _retargetTimer;
     private AEntity _attackTarget;
@@ -82,7 +81,7 @@ public abstract class AEntity : MonoBehaviour
     public float CurShield => _entityStatus.curShield;
     public EntityActionType CurAction => _entityStatus.curAction;
 
-    public virtual void Init(PrefabID argId, ulong argUid, Team argTeam, EntityInfo argEntityInfo, EntitySpawner argHomeSpawner)
+    public virtual void Init(PrefabID argId, ulong argUid, Team argTeam, EntityInfo argEntityInfo, int argHomeSpawnerIndex, Transform argTargetHqCoreTransform)
     {
         _entityLayerMask = LayerMask.GetMask(LAYER_NAME_ENTITY);
         
@@ -99,8 +98,8 @@ public abstract class AEntity : MonoBehaviour
             _direction = Vector2.left;
         }
         SetEntityInfo(argEntityInfo);
-        _homeSpawner = argHomeSpawner;
-        _targetHqCoreTransform = argHomeSpawner.TargetHqCoreTransform;
+        _homeSpawnerIndex = argHomeSpawnerIndex;
+        _targetHqCoreTransform = argTargetHqCoreTransform;
         _attackCooldownTimer = 0f;
     }
     
@@ -306,6 +305,7 @@ public abstract class AEntity : MonoBehaviour
 
     protected virtual void Reset()
     {
+        _entityStatus = new EntityStatus();
         _id = PrefabID.None;
         _uid = INVALID_UID;
         _direction = Vector2.zero;
@@ -316,7 +316,7 @@ public abstract class AEntity : MonoBehaviour
         EntityInfo emptyEntityInfo = new EntityInfo();
         SetEntityInfo(emptyEntityInfo);
         _targetHqCoreTransform = null;
-        _homeSpawner = null;
+        _homeSpawnerIndex = INVALID_SPAWNER_INDEX;
         _attackCooldownTimer = 0f;
     }
 
@@ -330,7 +330,7 @@ public abstract class AEntity : MonoBehaviour
         if (dist < errorThreshold)
         {
             var field = Managers.Game.GameField;
-            var hq = _entityStatus.team == Team.Player ? field.EnemyHq : field.PlayerHq; 
+            var hq = _entityStatus.team == Team.Player ? field.EnemyHq : field.PlayerHq;
             hq.OnHqDamaged((int)_entityStatus.attack);
             
             Die();

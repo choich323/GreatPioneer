@@ -53,6 +53,7 @@ public class EntitySpawner : MonoBehaviour
         
         _slotIndex = DEFAULT_SLOT_INDEX;
         _team = Team.None;
+        _targetHqCoreTransform = null;
     }
 
     void OnSlotTargetChanged(int argSlotIndex)
@@ -113,7 +114,7 @@ public class EntitySpawner : MonoBehaviour
             entityObj.transform.position = transform.position;
             entityObj.transform.SetParent(_entityParent);
             var entity = entityObj.GetComponent<AEntity>();
-            entity.Init(argPrefabId, Managers.Game.GetNewUid(), _team, argEntityInfo, this);
+            entity.Init(argPrefabId, Managers.Game.GetNewUid(), _team, argEntityInfo, _slotIndex, _targetHqCoreTransform);
             
             OnSpawn(entity);
         }

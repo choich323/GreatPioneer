@@ -41,14 +41,33 @@ public class HUDController : MonoBehaviour
     [SerializeField] private GameObject _subBtnGroup;
     [SerializeField] private List<CanvasGroup> _subBtnCanvasGroupList;
     [SerializeField] private float _subMenuAnimPlayTime = 0.1f;
-
-    private float _elpasedTime = 0f;
-    private bool _isPaused = false;
+    [SerializeField] private Button _optionBtn;
+    [SerializeField] private Button _restartBtn;
+    [SerializeField] private Button _exitBtn;
+    
+    private float _elapsedPlayTime = 0f;
     private bool _isSubMenuOpen = false;
+    private bool _isRestarting = false;
     private Coroutine _menuAnimCoroutine;
 
     public void Init()
     {
+        Clear();
+        
+        _optionBtn.onClick.AddListener(OnBtnOption);
+        _restartBtn.onClick.AddListener(OnBtnReStart);
+        _exitBtn.onClick.AddListener(OnBtnExit);
+    }
+
+    public void Clear()
+    {
+        _elapsedPlayTime = 0f;
+        _isSubMenuOpen = false;
+        if (_menuAnimCoroutine != null)
+        {
+            StopCoroutine(_menuAnimCoroutine);
+            _menuAnimCoroutine = null;
+        }
         _subBtnGroup.SetActive(false);
         foreach (var cg in _subBtnCanvasGroupList)
         {
@@ -56,10 +75,17 @@ public class HUDController : MonoBehaviour
             cg.interactable = false;
             cg.blocksRaycasts = false;
         }
+        
+        _optionBtn.onClick.RemoveAllListeners();
+        _restartBtn.onClick.RemoveAllListeners();
+        _exitBtn.onClick.RemoveAllListeners();
     }
     
     private void Update()
     {
+        if (_isRestarting)
+            return;
+        
         UpdatePlayerStatus();
         UpdateTimer();
     }
@@ -100,11 +126,11 @@ public class HUDController : MonoBehaviour
 
     void UpdateTimer()
     {
-        _elpasedTime += Time.deltaTime;
+        _elapsedPlayTime += Time.deltaTime;
 
-        int hours = Mathf.FloorToInt(_elpasedTime / HOUR_TO_SECOND);
-        int minutes = Mathf.FloorToInt((_elpasedTime % HOUR_TO_SECOND) / MINUTE_TO_SECOND);
-        int seconds = Mathf.FloorToInt(_elpasedTime % MINUTE_TO_SECOND);
+        int hours = Mathf.FloorToInt(_elapsedPlayTime / HOUR_TO_SECOND);
+        int minutes = Mathf.FloorToInt((_elapsedPlayTime % HOUR_TO_SECOND) / MINUTE_TO_SECOND);
+        int seconds = Mathf.FloorToInt(_elapsedPlayTime % MINUTE_TO_SECOND);
 
         if (hours > 0)
         {
@@ -118,10 +144,8 @@ public class HUDController : MonoBehaviour
     
     public void OnBtnPause()
     {
-        _isPaused = !_isPaused;
-        
         var gm = Managers.Game;
-        if (_isPaused)
+        if (!gm.IsPaused)
         {
             gm.PauseGame();
             _pauseBtnImage.sprite = _playBtnSprite;
@@ -178,5 +202,56 @@ public class HUDController : MonoBehaviour
         {
             _subBtnGroup.SetActive(false);
         }
+    }
+
+    private void OnBtnOption()
+    {
+        
+    }
+    
+    private void OnBtnReStart()
+    {
+        var gm = Managers.Game;
+        if(!gm.IsPaused)
+            OnBtnPause();
+
+        var popup = Managers.UI.Popup.OpenPopup<UIConfirm>(PrefabID.UIConfirm);
+        popup.Init();
+        // TODO: string매니저로 연결하기
+        string msg = "Are you sure to\n restart the Stage?";
+        popup.SetData(msg, () =>
+        {
+            _isRestarting = true;
+            Managers.Game.RestartStage();
+            Init();
+            _isRestarting = false;
+        },
+        () =>
+        {
+            if(gm.IsPaused)
+                OnBtnPause();
+        });
+    }
+    
+    private void OnBtnExit()
+    {
+        var gm = Managers.Game;
+        if(!gm.IsPaused)
+            OnBtnPause();
+        
+        var popup = Managers.UI.Popup.OpenPopup<UIConfirm>(PrefabID.UIConfirm);
+        popup.Init();
+        // TODO: string 매니저로 연결하기
+        string msg = "Are you sure to\n exit Stage?";
+        popup.SetData(msg, () =>
+        {
+            // TODO: 실제 씬 이름을 가져오도록 수정 필요
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby Scene");
+        },
+        () =>
+        {
+            if(gm.IsPaused)
+                OnBtnPause();
+        });
     }
 }
