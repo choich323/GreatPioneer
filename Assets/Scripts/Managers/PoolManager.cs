@@ -44,7 +44,7 @@ public class PoolManager : MonoBehaviour
         Object.Destroy(argObject);
     }
     
-    public GameObject Instantiate<T>(PrefabID argPrefabId) where T : Component
+    public GameObject Instantiate(PrefabID argPrefabId)
     {
         int id = (int)argPrefabId;
         if (!Managers.Data.TryGetPrefabInfo(id, out var info))

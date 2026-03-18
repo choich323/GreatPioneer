@@ -108,7 +108,7 @@ public class EntitySpawner : MonoBehaviour
     
     void Spawn(PrefabID argPrefabId, EntityInfo argEntityInfo)
     {
-        var entityObj = Managers.Pool.Instantiate<AEntity>(argPrefabId);
+        var entityObj = Managers.Pool.Instantiate(argPrefabId);
         if (entityObj != null)
         {
             entityObj.transform.position = transform.position;

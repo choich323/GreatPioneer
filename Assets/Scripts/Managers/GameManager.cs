@@ -17,10 +17,23 @@ public class GameManager : MonoBehaviour
     public int SlotCountMax => _slotCountMax;
     public bool IsGameOver => _gameField.IsGameOver();
     public bool IsPaused => _isPaused;
+
+    void Update()
+    {
+        CheckEscapeKey();    
+    }
+
+    void CheckEscapeKey()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // TODO: 게임 종료 팝업 호출
+        }
+    }
     
     public void Init()
     {
-        var gameFieldObj = Managers.Pool.Instantiate<GameField>(PrefabID.GameField);
+        var gameFieldObj = Managers.Pool.Instantiate(PrefabID.GameField);
         if (gameFieldObj == null)
         {
             Debug.LogError("Game field could not be instantiated.");

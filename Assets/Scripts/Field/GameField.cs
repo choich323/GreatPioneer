@@ -49,7 +49,7 @@ public class GameField : MonoBehaviour
     
     void CreateHq(Team argTeam)
     {
-        var hqObj = Managers.Pool.Instantiate<HeadQuater>(PrefabID.HeadQuater);
+        var hqObj = Managers.Pool.Instantiate(PrefabID.HeadQuater);
         if (hqObj == null)
             return;
         
@@ -78,7 +78,7 @@ public class GameField : MonoBehaviour
 
     EntitySpawner CreateSpawner(Team argTeam, int argSpawnerIndex)
     {
-        var spawnerObj = Managers.Pool.Instantiate<EntitySpawner>(PrefabID.EntitySpawner);
+        var spawnerObj = Managers.Pool.Instantiate(PrefabID.EntitySpawner);
         if (spawnerObj == null)
             return null;
         

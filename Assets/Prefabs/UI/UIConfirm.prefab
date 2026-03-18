@@ -887,6 +887,8 @@ MonoBehaviour:
   _msgText: {fileID: 7511085580838753932}
   _confirmBtn: {fileID: 1330803307381691397}
   _cancelBtn: {fileID: 513969772146432051}
+  _confirmText: {fileID: 831700177243630626}
+  _cancelText: {fileID: 1507461919309023903}
 --- !u!1001 &857524981002357557
 PrefabInstance:
   m_ObjectHideFlags: 0

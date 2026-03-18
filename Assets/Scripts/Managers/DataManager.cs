@@ -5,8 +5,10 @@ using UnityEngine;
 public class DataManager : MonoBehaviour
 {
     [SerializeField] private List<APrefabData> _dataList;
+    [SerializeField] private StringData _stringData;
     
     private Dictionary<int, APrefabInfo> _prefabDataDict = new Dictionary<int, APrefabInfo>();
+    private Dictionary<int, string> _stringDataDict = new Dictionary<int, string>();
     
     public void Init()
     {
@@ -31,6 +33,12 @@ public class DataManager : MonoBehaviour
                 }
             }
         }
+
+        foreach (var info in _stringData.GetInfoList())
+        {
+            var id = (int)ConvertStringToStringID(info.id);
+            _stringDataDict.Add(id, info.value);
+        }
     }
 
     PrefabID ConvertStringToPrefabID(string argPrefabId)
@@ -42,9 +50,24 @@ public class DataManager : MonoBehaviour
         Debug.LogError("Invalid prefab ID");
         return PrefabID.None;
     }
+
+    StringID ConvertStringToStringID(string argStringId)
+    {
+        if (Enum.TryParse(argStringId, true, out StringID stringId))
+        {
+            return stringId;
+        }
+        Debug.LogError("Invalid string ID");
+        return StringID.None;
+    }
     
     public bool TryGetPrefabInfo(int argId, out APrefabInfo outInfo)
     {
         return _prefabDataDict.TryGetValue(argId, out outInfo);
+    }
+
+    public bool TryGetString(int argId, out string outString)
+    {
+        return _stringDataDict.TryGetValue(argId, out outString);
     }
 }

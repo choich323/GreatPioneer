@@ -12,7 +12,6 @@ public class HUDController : MonoBehaviour
     private const float HP_LOW = 0.3f;
     private const float HOUR_TO_SECOND  = 3600f;
     private const float MINUTE_TO_SECOND  = 60f;
-
     
     [Header("Player HQ UI")] 
     [SerializeField] private Slider _hpSlider;
@@ -50,6 +49,8 @@ public class HUDController : MonoBehaviour
     private bool _isRestarting = false;
     private Coroutine _menuAnimCoroutine;
 
+    public bool IsPaused => Managers.Game.IsPaused;
+
     public void Init()
     {
         Clear();
@@ -83,7 +84,7 @@ public class HUDController : MonoBehaviour
     
     private void Update()
     {
-        if (_isRestarting)
+        if (_isRestarting || IsPaused)
             return;
         
         UpdatePlayerStatus();
@@ -145,7 +146,7 @@ public class HUDController : MonoBehaviour
     public void OnBtnPause()
     {
         var gm = Managers.Game;
-        if (!gm.IsPaused)
+        if (!IsPaused)
         {
             gm.PauseGame();
             _pauseBtnImage.sprite = _playBtnSprite;
@@ -211,47 +212,49 @@ public class HUDController : MonoBehaviour
     
     private void OnBtnReStart()
     {
-        var gm = Managers.Game;
-        if(!gm.IsPaused)
+        if(!IsPaused)
             OnBtnPause();
 
         var popup = Managers.UI.Popup.OpenPopup<UIConfirm>(PrefabID.UIConfirm);
         popup.Init();
-        // TODO: string매니저로 연결하기
-        string msg = "Are you sure to\n restart the Stage?";
-        popup.SetData(msg, () =>
+        var sm = Managers.String;
+        string msg = sm.GetString(StringID.ConfirmRestartStage);
+        string confirm = sm.GetString(StringID.Yes);
+        string cancel = sm.GetString(StringID.No);
+        popup.SetData(msg, OnConfirm, OnClose, confirm, cancel);
+
+        void OnConfirm()
         {
             _isRestarting = true;
             Managers.Game.RestartStage();
             Init();
             _isRestarting = false;
-        },
-        () =>
-        {
-            if(gm.IsPaused)
-                OnBtnPause();
-        });
+        }
+    }
+
+    void OnClose()
+    {
+        if(IsPaused)
+            OnBtnPause();
     }
     
     private void OnBtnExit()
     {
-        var gm = Managers.Game;
-        if(!gm.IsPaused)
+        if(!IsPaused)
             OnBtnPause();
         
         var popup = Managers.UI.Popup.OpenPopup<UIConfirm>(PrefabID.UIConfirm);
         popup.Init();
-        // TODO: string 매니저로 연결하기
-        string msg = "Are you sure to\n exit Stage?";
-        popup.SetData(msg, () =>
+        var sm = Managers.String;
+        string msg = sm.GetString(StringID.ConfirmExitStage);
+        string confirm = sm.GetString(StringID.Yes);
+        string cancel = sm.GetString(StringID.No);
+        popup.SetData(msg, OnConfirm, OnClose, confirm, cancel);
+
+        void OnConfirm()
         {
             // TODO: 실제 씬 이름을 가져오도록 수정 필요
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby Scene");
-        },
-        () =>
-        {
-            if(gm.IsPaused)
-                OnBtnPause();
-        });
+            // UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby Scene");
+        }
     }
 }
