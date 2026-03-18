@@ -58,8 +58,6 @@ public class UIManager : MonoBehaviour
     public void AttachToPopupParent(RectTransform argTarget)
     {
         argTarget.SetParent(_popupParent);
-        argTarget.offsetMin = Vector2.zero;
-        argTarget.offsetMax = Vector2.zero;
         argTarget.localScale = Vector3.one;
         argTarget.localPosition = Vector3.zero;
     }
