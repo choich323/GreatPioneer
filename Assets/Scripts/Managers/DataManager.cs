@@ -82,9 +82,6 @@ public class DataManager : MonoBehaviour
                 case Language.Korean:
                     outString = data.kr;
                     break;
-                case Language.Japanese:
-                    outString = data.jp;
-                    break;
             }
         }
         return isFind;

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -4555702561471690154}
   - component: {fileID: 6085571731153602665}
   - component: {fileID: 5280389297283159518}
+  - component: {fileID: 9120166470027335224}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -133,3 +134,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4066dec77be7c1468529e9c1c15f26f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LanguageManager
+--- !u!114 &9120166470027335224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7057011906925887961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4a7255afcfb145498a5260cd6f3dd5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoundManager

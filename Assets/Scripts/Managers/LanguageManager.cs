@@ -5,7 +5,6 @@ public enum Language
 {
     English = 0,
     Korean,
-    Japanese,
 }
 
 public class LanguageManager : MonoBehaviour

@@ -12,6 +12,9 @@ public class Managers : MonoBehaviour
     private UIManager _uiManager;
     private StringManager _stringManager;
     private LanguageManager _languageManager;
+    private SoundManager _soundManager;
+    
+    private CameraController _cameraController;
     
     // 접근용 프로퍼티
     public static PoolManager Pool => I._poolManager;
@@ -20,7 +23,10 @@ public class Managers : MonoBehaviour
     public static UIManager UI => I._uiManager;
     public static StringManager String => I._stringManager;
     public static LanguageManager Language => I._languageManager;
+    public static SoundManager Sound => I._soundManager;
 
+    public static CameraController CamController => I._cameraController;
+    
     private void Awake()
     {
         if (_instance == null)
@@ -29,6 +35,10 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             InitManagers();
+            if (Camera.main != null)
+            {
+                _cameraController = Camera.main.GetComponent<CameraController>();
+            }
         }
         else
         {
@@ -55,5 +65,8 @@ public class Managers : MonoBehaviour
 
         _languageManager = GetComponent<LanguageManager>();
         _languageManager.Init();
+        
+        _soundManager = GetComponent<SoundManager>();
+        _soundManager.Init();
     }
 }

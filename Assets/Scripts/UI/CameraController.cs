@@ -6,15 +6,23 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
+    private const string SENSITIVITY_KEY = "Sensitivity";
+    private const float MIN_BOUNDARY_X = -8f;
+    private const float MAX_BOUNDARY_X = 22f;
+    private const float DEFAULT_SENSITIVITY = 0.22f;
+    private const float DEFAULT_SLIDING_AMOUNT = 3.0f;
+    
     [Header("Boundary Settings")]
-    [SerializeField] private float _minX = -3f;
-    [SerializeField] private float _maxX = 20f;
+    [SerializeField] private float _minX = MIN_BOUNDARY_X;
+    [SerializeField] private float _maxX = MAX_BOUNDARY_X;
     [SerializeField] private Camera _mainCam;
 
     [Range(0.01f, 1f)]
-    [SerializeField] private float _smoothSpeed = 0.22f; // 낮을수록 부드러움
+    [SerializeField] private float _smoothSpeed = DEFAULT_SENSITIVITY; // 낮을수록 부드러움
     [Range(0f, 50f)]
-    [SerializeField] private float _slidingAmount = 3.0f; // 슬라이딩 강도
+    [SerializeField] private float _slidingAmount = DEFAULT_SLIDING_AMOUNT; // 슬라이딩 강도
+    
+    public float Sensitivity => _smoothSpeed;
     
     private Vector2 _lastScreenPos;
     private bool _isDragging = false;
@@ -26,6 +34,7 @@ public class CameraController : MonoBehaviour
         if(_mainCam == null)
             _mainCam = Camera.main;
         _targetX = transform.position.x;
+        _smoothSpeed = PlayerPrefs.GetFloat(SENSITIVITY_KEY, DEFAULT_SENSITIVITY);
     }
 
     void Update()
@@ -95,5 +104,11 @@ public class CameraController : MonoBehaviour
         var results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
         return results.Count > 0;
+    }
+
+    public void SetSensitivity(float argSensitivity)
+    {
+        _smoothSpeed = argSensitivity;
+        PlayerPrefs.SetFloat(SENSITIVITY_KEY, argSensitivity);
     }
 }

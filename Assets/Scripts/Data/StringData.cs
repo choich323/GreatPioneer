@@ -8,7 +8,6 @@ public class LocalizationText
 {
     public string en;
     public string kr;
-    public string jp;
 }
 
 [Serializable]

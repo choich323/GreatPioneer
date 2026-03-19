@@ -17,19 +17,71 @@ MonoBehaviour:
     value:
       en: Yes
       kr: "\uC608"
-      jp: 
   - id: No
     value:
       en: No
       kr: "\uC544\uB2C8\uC624"
-      jp: 
   - id: ConfirmRestartStage
     value:
       en: Are you sure to\n restart stage?
       kr: "\uD604\uC7AC \uC2A4\uD14C\uC774\uC9C0\uB97C\\n \uB2E4\uC2DC \uC2DC\uC791\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
-      jp: 
   - id: ConfirmExitStage
     value:
       en: Are you sure to\n exit stage?
       kr: "\uD604\uC7AC \uC2A4\uD14C\uC774\uC9C0\uC5D0\uC11C\\n \uB098\uAC00\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
-      jp: 
+  - id: OptionTitle
+    value:
+      en: Option
+      kr: "\uC124\uC815"
+  - id: Sound
+    value:
+      en: Sound
+      kr: "\uC18C\uB9AC"
+  - id: Sensitivity
+    value:
+      en: Sensitivity
+      kr: "\uAC10\uB3C4"
+  - id: Frame
+    value:
+      en: Frame
+      kr: "\uD504\uB808\uC784"
+  - id: Quality
+    value:
+      en: Quality
+      kr: "\uC131\uB2A5"
+  - id: Language
+    value:
+      en: Language
+      kr: "\uC5B8\uC5B4"
+  - id: Frame30
+    value:
+      en: 30 FPS
+      kr: "30 \uD504\uB808\uC784"
+  - id: Frame60
+    value:
+      en: 60 FPS
+      kr: "60 \uD504\uB808\uC784"
+  - id: FrameMax
+    value:
+      en: Max
+      kr: "\uC81C\uD55C \uC5C6\uC74C"
+  - id: QualityLow
+    value:
+      en: Low
+      kr: "\uB0AE\uC74C"
+  - id: QualityMedium
+    value:
+      en: Medium
+      kr: "\uC911\uAC04"
+  - id: QualityHigh
+    value:
+      en: High
+      kr: "\uB192\uC74C"
+  - id: LangEnglish
+    value:
+      en: English
+      kr: "\uC601\uC5B4"
+  - id: LangKorean
+    value:
+      en: Korean
+      kr: "\uD55C\uAD6D\uC5B4"

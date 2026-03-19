@@ -12,7 +12,6 @@ public class UIConfirm : APopup
     [SerializeField] private TextMeshProUGUI _cancelText;
 
     private Action _confirmAction;
-    private Action _cancelAction;
     
     public override void Init()
     {
@@ -23,7 +22,7 @@ public class UIConfirm : APopup
     {
         _msgText.text = argMsg;
         _confirmAction = argConfirmAction;
-        _cancelAction = argCancelAction;
+        _onClose = argCancelAction;
         
         _confirmText.text = argConfirmText;
         _cancelText.text = argCancelText;
@@ -34,12 +33,5 @@ public class UIConfirm : APopup
             _confirmAction?.Invoke();
             Close();
         });
-    }
-
-    public override void Close()
-    {
-        base.Close();
-        
-        _cancelAction?.Invoke();
     }
 }

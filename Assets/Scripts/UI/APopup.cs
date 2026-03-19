@@ -28,6 +28,8 @@ public abstract class APopup : MonoBehaviour
     [SerializeField] protected Button _closeButton;
     [SerializeField] protected GameObject _dimmedBg;
 
+    protected Action _onClose;
+    
     public PopupStackAction StackAction => _action;
     public PopupInputMode InputMode => _inputMode;
     public bool IsClosed { get; private set; } = true;
@@ -64,5 +66,12 @@ public abstract class APopup : MonoBehaviour
 
         IsClosed = true;
         Managers.UI.Popup.ClosePopup();
+        
+        _onClose?.Invoke();
+    }
+
+    public virtual void SetOnClose(Action argOnClose)
+    {
+        _onClose = argOnClose;
     }
 }
