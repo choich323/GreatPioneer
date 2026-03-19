@@ -11,6 +11,7 @@ public class Managers : MonoBehaviour
     private GameManager _gameManager;
     private UIManager _uiManager;
     private StringManager _stringManager;
+    private LanguageManager _languageManager;
     
     // 접근용 프로퍼티
     public static PoolManager Pool => I._poolManager;
@@ -18,6 +19,7 @@ public class Managers : MonoBehaviour
     public static GameManager Game => I._gameManager;
     public static UIManager UI => I._uiManager;
     public static StringManager String => I._stringManager;
+    public static LanguageManager Language => I._languageManager;
 
     private void Awake()
     {
@@ -50,5 +52,8 @@ public class Managers : MonoBehaviour
         
         _stringManager = GetComponent<StringManager>();
         _stringManager.Init();
+
+        _languageManager = GetComponent<LanguageManager>();
+        _languageManager.Init();
     }
 }

@@ -8,7 +8,7 @@ public class DataManager : MonoBehaviour
     [SerializeField] private StringData _stringData;
     
     private Dictionary<int, APrefabInfo> _prefabDataDict = new Dictionary<int, APrefabInfo>();
-    private Dictionary<int, string> _stringDataDict = new Dictionary<int, string>();
+    private Dictionary<int, LocalizationText> _stringDataDict = new Dictionary<int, LocalizationText>();
     
     public void Init()
     {
@@ -68,6 +68,25 @@ public class DataManager : MonoBehaviour
 
     public bool TryGetString(int argId, out string outString)
     {
-        return _stringDataDict.TryGetValue(argId, out outString);
+        outString = string.Empty;
+        bool isFind = _stringDataDict.TryGetValue(argId, out var data);
+        if (data != null)
+        {
+            var lang = Managers.Language.CurrentLanguage;
+            switch (lang)
+            {
+                default:
+                case Language.English:
+                    outString = data.en;
+                    break;
+                case Language.Korean:
+                    outString = data.kr;
+                    break;
+                case Language.Japanese:
+                    outString = data.jp;
+                    break;
+            }
+        }
+        return isFind;
     }
 }

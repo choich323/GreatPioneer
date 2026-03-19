@@ -4,10 +4,18 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [Serializable]
+public class LocalizationText
+{
+    public string en;
+    public string kr;
+    public string jp;
+}
+
+[Serializable]
 public class StringInfo
 {
     public string id;
-    public string value;
+    public LocalizationText value;
 }
 
 [CreateAssetMenu(fileName = "StringData", menuName = "Custom/StringData")]

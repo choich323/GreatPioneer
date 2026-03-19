@@ -14,10 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StringData
   stringInfoList:
   - id: Yes
-    value: Yes
+    value:
+      en: Yes
+      kr: "\uC608"
+      jp: 
   - id: No
-    value: No
+    value:
+      en: No
+      kr: "\uC544\uB2C8\uC624"
+      jp: 
   - id: ConfirmRestartStage
-    value: Are you sure to\n restart the Stage?
+    value:
+      en: Are you sure to\n restart stage?
+      kr: "\uD604\uC7AC \uC2A4\uD14C\uC774\uC9C0\uB97C\\n \uB2E4\uC2DC \uC2DC\uC791\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+      jp: 
   - id: ConfirmExitStage
-    value: Are you sure to\n exit Stage?
+    value:
+      en: Are you sure to\n exit stage?
+      kr: "\uD604\uC7AC \uC2A4\uD14C\uC774\uC9C0\uC5D0\uC11C\\n \uB098\uAC00\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+      jp: 
